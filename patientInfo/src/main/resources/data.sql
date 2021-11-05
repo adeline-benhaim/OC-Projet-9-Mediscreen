@@ -14,3 +14,9 @@ CREATE TABLE patient (
 
                 PRIMARY KEY (patient_id)
 );
+
+ INSERT INTO patient
+    (first_name, last_name, gender, birthdate)
+VALUES
+    ("adeline", 'benhaim', 'M', '4FDGFD')
+;

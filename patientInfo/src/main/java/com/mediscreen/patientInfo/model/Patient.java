@@ -2,11 +2,9 @@ package com.mediscreen.patientInfo.model;
 
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
-//@Entity
+@Entity
 @Builder
 @Getter
 @Setter
@@ -15,6 +13,8 @@ import javax.persistence.Table;
 @Table(name = "patient")
 public class Patient {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "patient_id")
     private int patientId;
 
@@ -24,6 +24,7 @@ public class Patient {
     @Column(name = "last_name")
     private String lastName;
 
+    @Enumerated(EnumType.STRING)
     public Gender gender;
 
     public enum Gender {
