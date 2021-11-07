@@ -7,6 +7,8 @@ import java.util.Optional;
 
 public interface PatientService {
 
+    Iterable<Patient> getAllPatients();
+
     /**
      * Find patients by first and last name
      *
@@ -14,7 +16,7 @@ public interface PatientService {
      * @param lastName  of wanted patient
      * @return a list of patients whose first and last name are identical to those sought
      */
-    List<Patient> getPatientList(String firstName, String lastName);
+    List<Patient> getPatientListByFistNameAndLastName(String firstName, String lastName);
 
     /**
      * Find a patient by id

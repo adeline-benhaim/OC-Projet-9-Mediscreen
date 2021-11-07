@@ -18,6 +18,10 @@ public class PatientServiceImpl implements PatientService {
     @Autowired
     PatientRepository patientRepository;
 
+    public Iterable<Patient> getAllPatients() {
+        return patientRepository.findAll();
+    }
+
     /**
      * Find patients by first and last name
      *
@@ -26,7 +30,7 @@ public class PatientServiceImpl implements PatientService {
      * @return a list of patients whose first and last name are identical to those sought
      */
     @Override
-    public List<Patient> getPatientList(String firstName, String lastName) {
+    public List<Patient> getPatientListByFistNameAndLastName(String firstName, String lastName) {
         logger.info("Get a patient by firstName : {} " + "and lastName : {} ", firstName, lastName);
         List<Patient> patientList = patientRepository.findByFirstNameAndLastName(firstName, lastName);
         if (!patientList.isEmpty()) return patientList;
