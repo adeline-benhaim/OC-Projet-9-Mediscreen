@@ -34,13 +34,13 @@ public class PatientController {
         }
     }
 
-        @GetMapping("/patientInfo/search/{id}")
-        public ResponseEntity<Optional<Patient>> getPatientById ( @PathVariable("id") int id){
+    @GetMapping("/patientInfo/search/{id}")
+    public ResponseEntity<Optional<Patient>> getPatientById(@PathVariable("id") int id) {
         try {
             Optional<Patient> patient = patientService.getPatientById(id);
             return ResponseEntity.ok(patient);
         } catch (PatientNotFoundException e) {
             return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
         }
-        }
     }
+}

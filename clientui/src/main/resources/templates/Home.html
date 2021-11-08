@@ -41,16 +41,17 @@
 <div class="container special">
     <h2 class="h2">Search patient</h2>
     <form method="post"
-          th:action="@{/search/{firstName}/{lastName}}">
+          th:action="@{/search/{firstName}/{lastName}}"
+          th:object="${patientBean}">
     <div class="row">
         <div class="col-md-6">
             <div class="form-group">
-                <input type="text" th:field="*{firstName}" name="firstName" class="form-control" placeholder="FirstName" value=""/>
+                <input type="text" th:field="*{firstName}" name="firstName" class="form-control" placeholder="FirstName" value="" required>
             </div>
         </div>
         <div class="col-md-6">
             <div class="form-group">
-                <input type="text" th:field="*{lastName}" name="lastName" class="form-control" placeholder="LastName" value=""/>
+                <input type="text" th:field="*{lastName}" name="lastName" class="form-control" placeholder="LastName" value="" required>
             </div>
         </div>
         <div class="col-md-12">
@@ -83,9 +84,9 @@
                 <td><span th:text="${patient.lastName}"> LastName </span></td>
                 <td><span th:text="${patient.dob}"> Birthdate </span></td>
                 <td>
-<!--                    <a th:href="@{/viewPatientInfo/{id}(id=${patientBean.patientId})}">-->
+                    <a th:href="@{/search/{id}(id=${patient.patId})}">
                         <button class="btn btn-info btn-sm"><i class="glyphicon glyphicon-user"></i> View</button>
-
+                    </a>
                     <button class="btn btn-warning btn-sm"><i class="glyphicon glyphicon-edit"></i> Update</button>
                 </td>
             </tr>
@@ -93,32 +94,6 @@
         </table>
     </div>
 </div>
-
-<!--<div class="container special">-->
-<!--    <h2 class="h2">All patients</h2>-->
-<!--    <div class="table-responsive ">-->
-<!--        <table class="table table-striped table-sm table table-bordered">-->
-<!--            <thead class="green">-->
-<!--            <tr>-->
-<!--                <th> FirstName</th>-->
-<!--                <th> LastName</th>-->
-<!--                <th> Birthdate</th>-->
-<!--            </tr>-->
-<!--            </thead>-->
-<!--            <tbody>-->
-<!--            <tr th:if="${allPatientBeanList.empty}">-->
-<!--                <td colspan="3">No patient yet</td>-->
-<!--            </tr>-->
-<!--            <tr th:each="patient: ${allPatientBeanList}">-->
-<!--                <td><span th:text="${patient.firstName}"> FirstName </span></td>-->
-<!--                <td><span th:text="${patient.lastName}"> LastName </span></td>-->
-<!--                <td><span th:text="${patient.birthdate}"> Birthdate </span></td>-->
-<!--            </tr>-->
-<!--            </tbody>-->
-<!--        </table>-->
-<!--    </div>-->
-<!--</div>-->
-
 
 <script type="text/javascript" src="webjars/bootstrap/4.0.0-2/js/bootstrap.min.js"></script>
 
