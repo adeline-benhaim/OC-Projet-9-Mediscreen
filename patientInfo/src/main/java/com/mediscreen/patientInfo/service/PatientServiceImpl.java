@@ -18,8 +18,13 @@ public class PatientServiceImpl implements PatientService {
     @Autowired
     PatientRepository patientRepository;
 
+    /**
+     * Find all patients
+     *
+     * @return a list with all patients sorted by lastName in alphabetical order
+     */
     public Iterable<Patient> getAllPatients() {
-        return patientRepository.findAll();
+        return patientRepository.findAllByOrderByLastNameAsc();
     }
 
     /**

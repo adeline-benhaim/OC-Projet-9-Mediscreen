@@ -7,6 +7,11 @@ import java.util.Optional;
 
 public interface PatientService {
 
+    /**
+     * Find all patients
+     *
+     * @return a list with all patients
+     */
     Iterable<Patient> getAllPatients();
 
     /**

@@ -17,4 +17,6 @@ public interface PatientRepository extends CrudRepository<Patient, Integer> {
      * @return a list of patients whose first and last name are identical to those sought
      */
     List<Patient> findByFirstNameAndLastName(String firstName, String lastName);
+
+    Iterable<Patient> findAllByOrderByLastNameAsc();
 }
