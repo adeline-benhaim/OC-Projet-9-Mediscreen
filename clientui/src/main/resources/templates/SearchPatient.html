@@ -39,7 +39,7 @@
 <div class="container special">
     <h2 class="h2">Search patient</h2>
     <form method="post"
-          th:action="@{/search/{firstName}/{lastName}}"
+          th:action="@{/search/{firstname}/{lastname}}"
           th:object="${patientBean}">
         <div class="row">
             <div class="col-md-5">
@@ -79,8 +79,10 @@
             </thead>
             <tbody>
             <tr th:if="${patientBeanList.empty}">
-                <td colspan="4">No patient found with name : <span th:text="${patientBean.firstName}"></span> <span
-                        th:text="${patientBean.lastName}"></span></td>
+                <td colspan="4">No patient found with name :
+                    <span th:text="${patientBean.firstName}"></span> <span
+                        th:text="${patientBean.lastName}"></span>
+                </td>
             </tr>
             <tr th:each="patient: ${patientBeanList}">
                 <td><span th:text="${patient.firstName}"> FirstName </span></td>
@@ -90,7 +92,9 @@
                     <a th:href="@{/search/{id}(id=${patient.patId})}">
                         <button class="btn btn-info btn-sm"><i class="glyphicon glyphicon-user"></i> View</button>
                     </a>
+                    <a th:href="@{/updatePatient/{id}(id=${patient.patId})}">
                     <button class="btn btn-warning btn-sm"><i class="glyphicon glyphicon-edit"></i> Update</button>
+                    </a>
                 </td>
             </tr>
             </tbody>
@@ -98,7 +102,7 @@
     </div>
     <a href="/patients">
         <button class="btn btn-light btn-sm pull-right" type="submit">
-            < Return list of patients
+            < Return to list of patients
         </button>
     </a>
 </div>

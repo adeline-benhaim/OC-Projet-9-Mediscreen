@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +25,7 @@ public class PatientServiceImpl implements PatientService {
      * @return a list with all patients sorted by lastName in alphabetical order
      */
     public Iterable<Patient> getAllPatients() {
+        logger.info("Get all patients");
         return patientRepository.findAllByOrderByLastNameAsc();
     }
 
@@ -56,5 +58,33 @@ public class PatientServiceImpl implements PatientService {
         if (patient.isPresent()) return patient;
         logger.error("No patient found with this id : {} ", id);
         throw new PatientNotFoundException("No patient found with this id : " + id);
+    }
+
+    /**
+     * Update an existing patient information
+     *
+     * @param patient to update
+     * @return patient with information updated
+     */
+    @Override
+    @Transactional
+    public Patient updatePatient(Patient patient) {
+        logger.info("Update a patient id : {} ", patient.getPatId());
+        Optional<Patient> patientToUpdate = patientRepository.findById(patient.getPatId());
+        if (patientToUpdate.isPresent()) {
+            Patient patientUpdated = Patient.builder()
+                    .patId(patient.getPatId())
+                    .firstName(patient.getFirstName())
+                    .lastName(patient.getLastName())
+                    .address(patient.getAddress())
+                    .dob(patient.getDob())
+                    .sex(patient.getSex())
+                    .phone(patient.getPhone())
+                    .build();
+            patientRepository.save(patientUpdated);
+            logger.info("Patient id : {} ", patientUpdated.getPatId() + " updated");
+            return patientUpdated;
+        }
+        throw new PatientNotFoundException("No patient found with this id : " + patient.getPatId());
     }
 }

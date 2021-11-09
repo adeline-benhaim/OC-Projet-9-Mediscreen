@@ -84,7 +84,9 @@
                     <a th:href="@{/search/{id}(id=${patient.patId})}">
                         <button class="btn btn-info btn-sm"><i class="glyphicon glyphicon-user"></i> View</button>
                     </a>
+                    <a th:href="@{/updatePatient/{id}(id=${patient.patId})}">
                     <button class="btn btn-warning btn-sm"><i class="glyphicon glyphicon-edit"></i> Update</button>
+                    </a>
                 </td>
             </tr>
             </tbody>

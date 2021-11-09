@@ -1,5 +1,6 @@
 package com.mediscreen.patientInfo.model;
 
+import com.sun.istack.NotNull;
 import lombok.*;
 
 import javax.persistence.*;
@@ -18,9 +19,11 @@ public class Patient {
     @Column(name = "patient_id")
     private int patId;
 
+    @NotNull
     @Column(name = "first_name")
     private String firstName;
 
+    @NotNull
     @Column(name = "last_name")
     private String lastName;
 
