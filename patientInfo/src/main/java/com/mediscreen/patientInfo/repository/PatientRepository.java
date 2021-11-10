@@ -25,5 +25,13 @@ public interface PatientRepository extends CrudRepository<Patient, Integer> {
      */
     Iterable<Patient> findAllByOrderByLastNameAsc();
 
+    /**
+     * Find a patient based on their firstName, lastName and birthdate
+     *
+     * @param firstName of wanted patient
+     * @param lastName of wanted patient
+     * @param birthdate of wanted patient
+     * @return a patient if exist
+     */
     Patient findByFirstNameAndLastNameAndDob(String firstName, String lastName, String birthdate);
 }

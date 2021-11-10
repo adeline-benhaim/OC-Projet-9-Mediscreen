@@ -89,6 +89,12 @@ public class PatientServiceImpl implements PatientService {
         throw new PatientNotFoundException("No patient found with this id : " + patient.getPatId());
     }
 
+    /**
+     * Create and save a new patient if don't already exist
+     *
+     * @param patient information to be created
+     * @return patient created if don't already exist
+     */
     @Override
     public Patient createPatient(Patient patient) {
         logger.info("Create a new patient : {} {} ", patient.getFirstName(), patient.getLastName());
