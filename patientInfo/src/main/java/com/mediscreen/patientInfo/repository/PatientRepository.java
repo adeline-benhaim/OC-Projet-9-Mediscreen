@@ -24,4 +24,6 @@ public interface PatientRepository extends CrudRepository<Patient, Integer> {
      * @return a list with all patients sorted by lastName in alphabetical order
      */
     Iterable<Patient> findAllByOrderByLastNameAsc();
+
+    Patient findByFirstNameAndLastNameAndDob(String firstName, String lastName, String birthdate);
 }

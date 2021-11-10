@@ -39,4 +39,6 @@ public interface PatientService {
      * @return patient with information updated
      */
     Patient updatePatient(Patient patient);
+
+    Patient createPatient(Patient patient);
 }

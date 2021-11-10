@@ -1,5 +1,6 @@
 package com.mediscreen.patientInfo.controller;
 
+import com.mediscreen.patientInfo.exceptions.PatientAlreadyExistException;
 import com.mediscreen.patientInfo.exceptions.PatientNotFoundException;
 import com.mediscreen.patientInfo.model.Patient;
 import com.mediscreen.patientInfo.service.PatientService;
@@ -51,4 +52,28 @@ public class PatientController {
             return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
+
+    @PostMapping("/patient/add")
+    public ResponseEntity<Patient> postPatient(@RequestParam("firstName")String firstName,
+                                               @RequestParam("lastName")String lastName,
+                                               @RequestParam("dob")String birthdate,
+                                               @RequestParam("sex")Patient.Sex sex,
+                                               @RequestParam(value = "address", required = false)String address,
+                                               @RequestParam(value = "phone", required = false)String phone) {
+     try {
+         Patient patient = Patient.builder()
+                 .firstName(firstName)
+                 .lastName(lastName)
+                 .dob(birthdate)
+                 .sex(sex)
+                 .address(address)
+                 .phone(phone)
+                 .build();
+         Patient patientToCreate = patientService.createPatient(patient);
+         return ResponseEntity.ok(patientToCreate);
+     } catch (PatientAlreadyExistException e) {
+         return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
+     }
+    }
+
 }
