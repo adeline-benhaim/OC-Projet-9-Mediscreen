@@ -6,9 +6,7 @@ import com.mediscreen.patientInfo.service.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -39,6 +37,16 @@ public class PatientController {
         try {
             Optional<Patient> patient = patientService.getPatientById(id);
             return ResponseEntity.ok(patient);
+        } catch (PatientNotFoundException e) {
+            return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PutMapping("/patientInfo/update")
+    public ResponseEntity<Patient> updatePatient(@RequestBody Patient patient ){
+        try {
+            Patient patientToUpdate = patientService.updatePatient(patient);
+            return ResponseEntity.ok(patientToUpdate);
         } catch (PatientNotFoundException e) {
             return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
         }

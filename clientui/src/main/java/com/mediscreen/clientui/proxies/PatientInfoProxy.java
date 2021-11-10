@@ -2,8 +2,11 @@ package com.mediscreen.clientui.proxies;
 
 import com.mediscreen.clientui.beans.PatientBean;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
@@ -38,4 +41,7 @@ public interface PatientInfoProxy {
      */
     @GetMapping("/patientInfo/search/{id}")
     PatientBean getPatientById (@PathVariable("id") int id);
+
+    @PutMapping("/patientInfo/update")
+    PatientBean updatePatient(@RequestBody PatientBean patientBean );
 }

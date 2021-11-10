@@ -21,9 +21,9 @@ public class ClientInfoController {
     PatientInfoProxy patientInfoProxy;
 
     @GetMapping("/search/{firstName}/{lastName}")
-    public String searchByFirstNameAndLastName(@PathVariable("firstName") String firstName, @PathVariable("lastName") String lastName, @ModelAttribute PatientBean patientBean, Model model) {
+    public String searchByFirstNameAndLastName(@ModelAttribute PatientBean patientBean, Model model) {
         try {
-            List<PatientBean> patientBeanList = patientInfoProxy.getPatientList(firstName, lastName);
+            List<PatientBean> patientBeanList = patientInfoProxy.getPatientList(patientBean.getFirstName(), patientBean.getLastName());
             model.addAttribute("patientBeanList", patientBeanList);
             return "SearchPatient";
         } catch (FeignException feignException$NotFound) {
@@ -33,17 +33,9 @@ public class ClientInfoController {
         }
     }
 
-    @PostMapping("/search/{firstName}/{lastName}")
-    public String searchPatient(@ModelAttribute PatientBean patientBean, Model model) {
-        try {
-            List<PatientBean> patientBeanList = patientInfoProxy.getPatientList(patientBean.getFirstName(), patientBean.getLastName());
-            model.addAttribute("patientBeanList", patientBeanList);
+    @PostMapping("/search/{firstname}/{lastname}")
+    public String searchPatient(@ModelAttribute PatientBean patientBean) {
             return "redirect:/search/" + patientBean.getFirstName() + "/" + patientBean.getLastName();
-        } catch (FeignException feignException$NotFound) {
-            List<PatientBean> patientBeanList = new ArrayList<>();
-            model.addAttribute("patientBeanList", patientBeanList);
-            return "redirect:/search/" + patientBean.getFirstName() + "/" + patientBean.getLastName();
-        }
     }
 
     @GetMapping("/")
@@ -66,31 +58,31 @@ public class ClientInfoController {
         }
     }
 
-    @PostMapping("/patients}")
-    public String allPatients(@ModelAttribute PatientBean patientBean, Model model) {
-        try {
-            List<PatientBean> patientBeanList = patientInfoProxy.getPatientList(patientBean.getFirstName(), patientBean.getLastName());
-            model.addAttribute("patientBeanList", patientBeanList);
-            return "redirect:/search/" + patientBean.getFirstName() + "/" + patientBean.getLastName();
-        } catch (FeignException feignException$NotFound) {
-            List<PatientBean> patientBeanList = new ArrayList<>();
-            model.addAttribute("patientBeanList", patientBeanList);
-            return "redirect:/search/" + patientBean.getFirstName() + "/" + patientBean.getLastName();
-        }
-    }
-
-
-    @GetMapping("/search/{id}")
+    @GetMapping("/searchById/{id}")
     public String searchById(@PathVariable("id") int patId, Model model) {
         try {
             PatientBean patientBean = patientInfoProxy.getPatientById(patId);
             model.addAttribute("patientBean", patientBean);
             return "PatientInfo";
         } catch (FeignException feignException$NotFound) {
-            PatientBean patientBean = new PatientBean();
-            model.addAttribute("patientBean", patientBean);
-            return "SearchPatient";
+            return "redirect:/patients";
         }
     }
 
-}
+    @GetMapping("/updatePatient/{id}")
+    public String getFormToUpdatePatient(@PathVariable("id") int patId, Model model) {
+        try {
+            PatientBean patientBeanToUpdate = patientInfoProxy.getPatientById(patId);
+            model.addAttribute("patientBean", patientBeanToUpdate);
+            return "FormUpdatePatient";
+        } catch (FeignException feignException$NotFound) {
+            return "redirect:/patients";
+        }
+    }
+
+        @PostMapping("/updatePatient")
+        public String updatePatient (@ModelAttribute PatientBean patientBean){
+            patientInfoProxy.updatePatient(patientBean);
+            return "redirect:/patients";
+        }
+    }

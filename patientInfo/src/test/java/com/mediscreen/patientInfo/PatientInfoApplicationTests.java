@@ -9,5 +9,8 @@ class PatientInfoApplicationTests {
 	@Test
 	void contextLoads() {
 	}
-
+	@Test
+	public void main() {
+		PatientInfoApplication.main(new String[]{});
+	}
 }

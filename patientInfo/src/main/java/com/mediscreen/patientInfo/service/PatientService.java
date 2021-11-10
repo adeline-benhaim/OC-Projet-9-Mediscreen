@@ -1,6 +1,7 @@
 package com.mediscreen.patientInfo.service;
 
 import com.mediscreen.patientInfo.model.Patient;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -30,4 +31,12 @@ public interface PatientService {
      * @return patient found
      */
     Optional<Patient> getPatientById(int id);
+
+    /**
+     * Update an existing patient information
+     *
+     * @param patient to update
+     * @return patient with information updated
+     */
+    Patient updatePatient(Patient patient);
 }
