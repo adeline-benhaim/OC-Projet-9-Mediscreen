@@ -7,14 +7,18 @@ import com.mediscreen.patientInfo.service.PatientServiceImpl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.mediscreen.patientInfo.config.DataSourceTest.asJsonString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -96,4 +100,43 @@ public class PatientControllerTest {
         mockMvc.perform(get("/patientInfo/search/2"))
                 .andExpect(status().isNotFound());
     }
+
+    @Test
+    @DisplayName("PUT request (/patientInfo/update) with a existing patient must return an HTTP 200 response")
+    public void putExistingPatient() throws Exception {
+
+        //GIVEN
+        Patient patient = Patient.builder()
+                .firstName("firstname1")
+                .lastName("lastname1")
+                .build();
+
+        //THEN
+        mockMvc.perform(MockMvcRequestBuilders
+                .put("/patientInfo/update")
+                .content(asJsonString(patient))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+//    @Test
+//    @DisplayName("PUT request (/patientInfo/update) with an unknown patient must return an HTTP 404 response")
+//    public void putAnUnknownPatient() throws Exception {
+//
+//        //GIVEN
+//        Patient patient = Patient.builder()
+//                .firstName("firstname1")
+//                .lastName("lastname1")
+//                .build();
+//        when(patientService.updatePatient(patient)).thenThrow(new PatientNotFoundException(" "));
+//
+//        //THEN
+//        mockMvc.perform(MockMvcRequestBuilders
+//                .put("/patientInfo/update")
+//                .content(asJsonString(patient))
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .accept(MediaType.APPLICATION_JSON))
+//                .andExpect(status().isNotFound());
+//    }
 }

@@ -18,6 +18,8 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -97,5 +99,35 @@ public class PatientServiceImplTest {
 
         //THEN
         assertThrows(PatientNotFoundException.class, () -> patientService.getPatientById(2));
+    }
+
+    @Test
+    @DisplayName("Update a patient present in Database")
+    void updatePatientTest() {
+
+        //GIVEN
+        Patient patient = Patient.builder().patId(1).lastName("lastname").build();
+        Patient newPatient = Patient.builder().patId(1).lastName("lastnameUpdated").build();
+
+        //WHEN
+        Mockito.when(patientRepository.findById(patient.getPatId())).thenReturn(Optional.of(patient));
+
+        //THEN
+        assertEquals("lastnameUpdated", patientService.updatePatient(newPatient).getLastName());
+        verify(patientRepository, Mockito.times(1)).save(any());
+    }
+
+    @Test
+    @DisplayName("Update a unknown patient ")
+    void updateUnknownPatientTest() {
+
+        //GIVEN
+        Patient patient = Patient.builder().patId(1).build();
+
+        //WHEN
+        Mockito.when(patientRepository.findById(1)).thenReturn(Optional.empty());
+
+        //THEN
+        assertThrows(PatientNotFoundException.class, () -> patientService.updatePatient(patient));
     }
 }

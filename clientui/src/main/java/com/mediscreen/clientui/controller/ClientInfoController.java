@@ -58,7 +58,7 @@ public class ClientInfoController {
         }
     }
 
-    @GetMapping("/search/{id}")
+    @GetMapping("/searchById/{id}")
     public String searchById(@PathVariable("id") int patId, Model model) {
         try {
             PatientBean patientBean = patientInfoProxy.getPatientById(patId);

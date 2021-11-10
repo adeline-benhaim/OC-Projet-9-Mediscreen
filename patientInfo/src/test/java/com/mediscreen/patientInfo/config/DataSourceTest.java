@@ -1,5 +1,6 @@
 package com.mediscreen.patientInfo.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mediscreen.patientInfo.model.Patient;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,5 +27,13 @@ public class DataSourceTest {
         Patient patient2 = Patient.builder().firstName("firstname1").lastName("lastname1").build();
         patientMocked.addAll(Arrays.asList(patient1, patient2));
         return patientMocked;
+    }
+
+    public static String asJsonString(final Object obj) {
+        try {
+            return new ObjectMapper().writeValueAsString(obj);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

@@ -43,7 +43,7 @@
             <div class="col-md-5">
                 <div class="form-group">
                     <input type="text" th:field="*{firstName}" name="firstName" class="form-control"
-                           placeholder="FirstName" value="" required>
+                           placeholder="FirstName" value=" " required>
                 </div>
             </div>
             <div class="col-md-5">
@@ -87,7 +87,7 @@
                 <td><span th:text="${patient.lastName}"> LastName </span></td>
                 <td><span th:text="${patient.dob}"> Birthdate </span></td>
                 <td>
-                    <a th:href="@{/search/{id}(id=${patient.patId})}">
+                    <a th:href="@{/searchById/{id}(id=${patient.patId})}">
                         <button class="btn btn-info btn-sm"><i class="glyphicon glyphicon-user"></i> View</button>
                     </a>
                     <a th:href="@{/updatePatient/{id}(id=${patient.patId})}">
