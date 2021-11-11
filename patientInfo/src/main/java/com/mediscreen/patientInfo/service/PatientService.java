@@ -1,7 +1,6 @@
 package com.mediscreen.patientInfo.service;
 
 import com.mediscreen.patientInfo.model.Patient;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -39,4 +38,12 @@ public interface PatientService {
      * @return patient with information updated
      */
     Patient updatePatient(Patient patient);
+
+    /**
+     * Create and save a new patient if don't already exist
+     *
+     * @param patient information to be created
+     * @return patient created if don't already exist
+     */
+    Patient createPatient(Patient patient);
 }

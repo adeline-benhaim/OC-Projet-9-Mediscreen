@@ -6,6 +6,8 @@ import feign.FeignException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,7 +37,7 @@ public class ClientInfoController {
 
     @PostMapping("/search/{firstname}/{lastname}")
     public String searchPatient(@ModelAttribute PatientBean patientBean) {
-            return "redirect:/search/" + patientBean.getFirstName() + "/" + patientBean.getLastName();
+        return "redirect:/search/" + patientBean.getFirstName() + "/" + patientBean.getLastName();
     }
 
     @GetMapping("/")
@@ -80,9 +82,33 @@ public class ClientInfoController {
         }
     }
 
-        @PostMapping("/updatePatient")
-        public String updatePatient (@ModelAttribute PatientBean patientBean){
-            patientInfoProxy.updatePatient(patientBean);
-            return "redirect:/patients";
-        }
+    @PostMapping("/updatePatient")
+    public String updatePatient(@ModelAttribute PatientBean patientBean) {
+        patientInfoProxy.updatePatient(patientBean);
+        return "redirect:/patients";
     }
+
+    @GetMapping("/addPatient")
+    public String addPatient(Model model) {
+        PatientBean patientBean = new PatientBean();
+        model.addAttribute("patientBean", patientBean);
+        return "FormNewPatient";
+    }
+
+    @PostMapping("/addPatient")
+    public String addPatient(@ModelAttribute PatientBean patientBean, Model model, BindingResult result) {
+        if (!result.hasErrors()) {
+            try {
+                PatientBean patientBean1 = patientInfoProxy.postPatient(patientBean.getFirstName(), patientBean.getLastName(), patientBean.getDob(), patientBean.getSex(), patientBean.getAddress(), patientBean.getPhone());
+                return "redirect:/searchById/" + patientBean1.getPatId();
+            } catch (FeignException e) {
+                ObjectError objectError = new ObjectError("error", e.getMessage());
+                result.addError(objectError);
+                model.addAttribute("patientBean", patientBean);
+                return "FormNewPatient";
+            }
+        }
+        return "redirect:/addPatient";
+    }
+
+}

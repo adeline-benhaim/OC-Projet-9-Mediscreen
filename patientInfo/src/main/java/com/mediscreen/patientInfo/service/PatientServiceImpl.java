@@ -1,5 +1,6 @@
 package com.mediscreen.patientInfo.service;
 
+import com.mediscreen.patientInfo.exceptions.PatientAlreadyExistException;
 import com.mediscreen.patientInfo.exceptions.PatientNotFoundException;
 import com.mediscreen.patientInfo.model.Patient;
 import com.mediscreen.patientInfo.repository.PatientRepository;
@@ -86,5 +87,22 @@ public class PatientServiceImpl implements PatientService {
             return patientUpdated;
         }
         throw new PatientNotFoundException("No patient found with this id : " + patient.getPatId());
+    }
+
+    /**
+     * Create and save a new patient if don't already exist
+     *
+     * @param patient information to be created
+     * @return patient created if don't already exist
+     */
+    @Override
+    public Patient createPatient(Patient patient) {
+        logger.info("Create a new patient : {} {} ", patient.getFirstName(), patient.getLastName());
+        if (patientRepository.findByFirstNameAndLastNameAndDob(patient.getFirstName(), patient.getLastName(), patient.getDob()) != null) {
+            logger.error("Patient {} {} already exist with this birthdate : {}", patient.getFirstName(), patient.getLastName(), patient.getDob());
+            throw new PatientAlreadyExistException("Patient " + patient.getFirstName() + ' ' + patient.getLastName() + " already exist with this birthdate : " + patient.getDob());
+        }
+        logger.info("New patient created");
+        return patientRepository.save(patient);
     }
 }

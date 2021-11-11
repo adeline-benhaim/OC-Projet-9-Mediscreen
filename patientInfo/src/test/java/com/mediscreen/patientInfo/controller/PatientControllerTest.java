@@ -1,6 +1,7 @@
 package com.mediscreen.patientInfo.controller;
 
 import com.mediscreen.patientInfo.config.DataSourceTest;
+import com.mediscreen.patientInfo.exceptions.PatientAlreadyExistException;
 import com.mediscreen.patientInfo.exceptions.PatientNotFoundException;
 import com.mediscreen.patientInfo.model.Patient;
 import com.mediscreen.patientInfo.service.PatientServiceImpl;
@@ -19,6 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.mediscreen.patientInfo.config.DataSourceTest.asJsonString;
+import static com.mediscreen.patientInfo.model.Patient.Sex.F;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -74,7 +78,7 @@ public class PatientControllerTest {
 
     @Test
     @DisplayName("GET request (/patientInfo/search/{id}) with an exiting patient must return an HTTP 200 response")
-    void getPatientById() throws Exception {
+    void getPatientByIdTest() throws Exception {
 
         //GIVEN
         List<Patient>patientList = new ArrayList<>();
@@ -91,7 +95,7 @@ public class PatientControllerTest {
 
     @Test
     @DisplayName("GET request (/patientInfo/search/{id}) with an unknown id patient must return an HTTP 404 response")
-    void getPatientByUnknownId() throws Exception {
+    void getPatientByUnknownIdTest() throws Exception {
 
         //WHEN
         when(patientService.getPatientById(2)).thenThrow(new PatientNotFoundException(""));
@@ -120,23 +124,50 @@ public class PatientControllerTest {
                 .andExpect(status().isOk());
     }
 
-//    @Test
-//    @DisplayName("PUT request (/patientInfo/update) with an unknown patient must return an HTTP 404 response")
-//    public void putAnUnknownPatient() throws Exception {
-//
-//        //GIVEN
-//        Patient patient = Patient.builder()
-//                .firstName("firstname1")
-//                .lastName("lastname1")
-//                .build();
-//        when(patientService.updatePatient(patient)).thenThrow(new PatientNotFoundException(" "));
-//
-//        //THEN
-//        mockMvc.perform(MockMvcRequestBuilders
-//                .put("/patientInfo/update")
-//                .content(asJsonString(patient))
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .accept(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isNotFound());
-//    }
+    @Test
+    @DisplayName("POST request (/patient/add) with a new patient must return an HTTP 200 response")
+    public void postANewPatientTest() throws Exception {
+
+        //GIVEN
+        Patient patient = Patient.builder()
+                .firstName("firstname")
+                .lastName("lastname")
+                .sex(F)
+                .dob("1950-05-05")
+                .build();
+        when(patientService.createPatient(patient)).thenReturn(null);
+
+        //THEN
+        mockMvc.perform(MockMvcRequestBuilders
+                .post("/patient/add")
+                .param("firstName", patient.getFirstName())
+                .param("lastName", patient.getLastName())
+                .param("dob", patient.getDob())
+                .param("sex", String.valueOf(patient.sex))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("POST request (/patient/add) with a new patient but without all the expected parameters must return an HTTP 400 response")
+    public void postANewPatientWithoutExpectedParametersTest() throws Exception {
+
+        //GIVEN
+        Patient patient = Patient.builder()
+                .firstName("firstname")
+                .lastName("lastname")
+                .sex(F)
+                .build();
+
+        //THEN
+        mockMvc.perform(MockMvcRequestBuilders
+                .post("/patient/add")
+                .param("firstName", patient.getFirstName())
+                .param("lastName", patient.getLastName())
+                .param("sex", String.valueOf(patient.sex))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
 }

@@ -1,6 +1,7 @@
 package com.mediscreen.patientInfo.service;
 
 import com.mediscreen.patientInfo.config.DataSourceTest;
+import com.mediscreen.patientInfo.exceptions.PatientAlreadyExistException;
 import com.mediscreen.patientInfo.exceptions.PatientNotFoundException;
 import com.mediscreen.patientInfo.model.Patient;
 import com.mediscreen.patientInfo.repository.PatientRepository;
@@ -16,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.ArrayList;
 import java.util.Optional;
 
+import static com.mediscreen.patientInfo.model.Patient.Sex.F;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -129,5 +131,43 @@ public class PatientServiceImplTest {
 
         //THEN
         assertThrows(PatientNotFoundException.class, () -> patientService.updatePatient(patient));
+    }
+
+    @Test
+    @DisplayName("Create a new patient")
+    void createANewPatientTest() {
+
+        // GIVEN
+        Patient newPatient = Patient.builder()
+                .firstName("firstname8")
+                .lastName("lastname8")
+                .dob("1950-02-10")
+                .sex(F)
+                .build();
+        when(patientRepository.findByFirstNameAndLastNameAndDob(newPatient.getFirstName(),newPatient.getLastName(),newPatient.getDob())).thenReturn(null);
+
+        // WHEN
+        patientService.createPatient(newPatient);
+
+        // THEN
+        verify(patientRepository, Mockito.times(1)).save(newPatient);
+    }
+
+    @Test
+    @DisplayName("Try to create a patient who already exist")
+    void createAPatientAlreadyExistingTest() {
+
+        // GIVEN
+        Patient newPatient = Patient.builder()
+                .firstName("firstname8")
+                .lastName("lastname8")
+                .dob("1950-02-10")
+                .sex(F)
+                .build();
+        when(patientRepository.findByFirstNameAndLastNameAndDob(newPatient.getFirstName(),newPatient.getLastName(),newPatient.getDob())).thenReturn(dataSourceTest.getAllPatientsMocked().get(0));
+
+
+        // THEN
+        assertThrows(PatientAlreadyExistException.class, ()-> patientService.createPatient(newPatient));
     }
 }
