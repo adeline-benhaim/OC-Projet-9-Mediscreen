@@ -45,6 +45,11 @@
     <div>
         <form method="post"
               th:action="@{/updatePatient}" th:object="${patientBean}">
+
+            <div class="alert alert-danger" th:if="${#fields.hasErrors('global')}" >
+                <p th:errors="*{global}"></p>
+            </div>
+
             <div class="form-group">
                 <input
                         type="hidden" th:field="*{patId}" class="form-control">
@@ -79,7 +84,7 @@
                 <div class="form-group col-xs-6">
                     <label for="patientLastNameInput">Birthdate</label>
                     <input
-                            type="text" th:field="*{dob}" class="form-control" id="patientBirthdateInput"
+                            type="date" th:field="*{dob}" class="form-control" id="patientBirthdateInput"
                             aria-describedby="patientBirthdateHelp" placeholder="Enter the patient's birthdate"
                             th:value="${patientBean.dob}" required> <small
                         id="patientBirthdateHelp" class="form-text text-muted">Modify the patient's birthdate</small>

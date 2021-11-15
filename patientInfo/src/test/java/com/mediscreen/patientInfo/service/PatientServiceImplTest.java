@@ -120,7 +120,7 @@ public class PatientServiceImplTest {
     }
 
     @Test
-    @DisplayName("Update a unknown patient ")
+    @DisplayName("Try to update a unknown patient ")
     void updateUnknownPatientTest() {
 
         //GIVEN
@@ -134,6 +134,21 @@ public class PatientServiceImplTest {
     }
 
     @Test
+    @DisplayName("Try to update a patient with the information of another already existing patient")
+    void updatePatientWithInfoOfAnotherAlreadyExistingPatientTest() {
+
+        //GIVEN
+        Patient patient = Patient.builder().patId(1).firstName("firstname2").lastName("lastname2").dob("1950-01-01").build();
+
+        //WHEN
+        Mockito.when(patientRepository.findById(1)).thenReturn(Optional.of(patient));
+        Mockito.when(patientRepository.findByFirstNameAndLastNameAndDob(patient.getFirstName(), patient.getLastName(), patient.getDob())).thenReturn(dataSourceTest.getAllPatientsMocked());
+
+        //THEN
+        assertThrows(PatientAlreadyExistException.class, () -> patientService.updatePatient(patient));
+    }
+
+    @Test
     @DisplayName("Create a new patient")
     void createANewPatientTest() {
 
@@ -144,7 +159,7 @@ public class PatientServiceImplTest {
                 .dob("1950-02-10")
                 .sex(F)
                 .build();
-        when(patientRepository.findByFirstNameAndLastNameAndDob(newPatient.getFirstName(),newPatient.getLastName(),newPatient.getDob())).thenReturn(null);
+        when(patientRepository.findByFirstNameAndLastNameAndDob(newPatient.getFirstName(),newPatient.getLastName(),newPatient.getDob())).thenReturn(dataSourceTest.getPatientMocked());
 
         // WHEN
         patientService.createPatient(newPatient);
@@ -164,7 +179,7 @@ public class PatientServiceImplTest {
                 .dob("1950-02-10")
                 .sex(F)
                 .build();
-        when(patientRepository.findByFirstNameAndLastNameAndDob(newPatient.getFirstName(),newPatient.getLastName(),newPatient.getDob())).thenReturn(dataSourceTest.getAllPatientsMocked().get(0));
+        when(patientRepository.findByFirstNameAndLastNameAndDob(newPatient.getFirstName(),newPatient.getLastName(),newPatient.getDob())).thenReturn(dataSourceTest.getAllPatientsMocked());
 
 
         // THEN

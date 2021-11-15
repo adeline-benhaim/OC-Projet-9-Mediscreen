@@ -1,0 +1,28 @@
+version: "3"
+services:
+
+  patientinfo:
+    image: patient_info:1.0
+    depends_on:
+      - mysql_db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://localhost:3306/mediscreen
+    ports:
+      - "8081:8081"
+
+  mysql_db:
+    image: "mysql:8.0"
+#    volumes:
+#      - mysql_db_data:/var/lib/mysql
+    restart: always
+#    ports:
+#      - "33060:3306"
+    environment:
+      MYSQL_DATABASE: mediscreen
+#      MYSQL_USER: root
+#      MYSQL_PASSWORD: rootroot
+      MYSQL_ROOT_PASSWORD: rootroot
+
+
+#volumes:
+#  db_data: {}

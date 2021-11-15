@@ -1,6 +1,7 @@
 package com.mediscreen.patientInfo.service;
 
 import com.mediscreen.patientInfo.model.Patient;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;

@@ -1,13 +1,10 @@
 package com.mediscreen.patientInfo.controller;
 
-import com.mediscreen.patientInfo.config.DataSourceTest;
-import com.mediscreen.patientInfo.exceptions.PatientAlreadyExistException;
 import com.mediscreen.patientInfo.exceptions.PatientNotFoundException;
 import com.mediscreen.patientInfo.model.Patient;
 import com.mediscreen.patientInfo.service.PatientServiceImpl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -21,8 +18,6 @@ import java.util.List;
 
 import static com.mediscreen.patientInfo.config.DataSourceTest.asJsonString;
 import static com.mediscreen.patientInfo.model.Patient.Sex.F;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -57,7 +52,7 @@ public class PatientControllerTest {
         patientList.add(patient);
 
         //WHEN
-        when(patientService.getPatientListByFistNameAndLastName("firstname1", "lastname1")).thenReturn(patientList);
+        Mockito.when(patientService.getPatientListByFistNameAndLastName("firstname1", "lastname1")).thenReturn(patientList);
 
         //THEN
         mockMvc.perform(get("/patientInfo/search/firstname1/lastname1"))
@@ -135,7 +130,6 @@ public class PatientControllerTest {
                 .sex(F)
                 .dob("1950-05-05")
                 .build();
-        when(patientService.createPatient(patient)).thenReturn(null);
 
         //THEN
         mockMvc.perform(MockMvcRequestBuilders
