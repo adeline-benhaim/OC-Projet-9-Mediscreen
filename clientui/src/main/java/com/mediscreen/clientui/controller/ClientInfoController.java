@@ -1,9 +1,14 @@
 package com.mediscreen.clientui.controller;
 
+import com.mediscreen.clientui.beans.AppointmentBean;
 import com.mediscreen.clientui.beans.PatientBean;
 import com.mediscreen.clientui.service.ClientInfoService;
+import com.mediscreen.clientui.service.ClientNoteService;
 import feign.FeignException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.util.Pair;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -21,6 +26,8 @@ public class ClientInfoController {
 
     @Autowired
     ClientInfoService clientInfoService;
+    @Autowired
+    ClientNoteService clientNoteService;
 
     @GetMapping("/search/{firstName}/{lastName}")
     public String searchByFirstNameAndLastName(@ModelAttribute PatientBean patientBean, Model model) {
@@ -61,10 +68,14 @@ public class ClientInfoController {
     }
 
     @GetMapping("/searchById/{id}")
-    public String searchById(@PathVariable("id") int patId, Model model) {
+    public String searchById(@PathVariable("id") int patId, Model model, @PageableDefault(size = 3) Pageable pageable) {
+        String baseUri = "/searchById/" + patId + "?page=";
         try {
             PatientBean patientBean = clientInfoService.getPatientById(patId);
             model.addAttribute("patientBean", patientBean);
+            Pair<List<AppointmentBean>, Long> appointmentBeanList = clientNoteService.getNotesBean(patientBean.getPatId(), pageable);
+            model.addAttribute("appointmentBeanList", appointmentBeanList.getFirst());
+            PaginationUtils.paginationBuilder(model, pageable, appointmentBeanList.getSecond(), baseUri);
             return "PatientInfo";
         } catch (FeignException feignException$NotFound) {
             return "redirect:/patients";
@@ -112,7 +123,7 @@ public class ClientInfoController {
                 PatientBean patientBean1 = clientInfoService.postPatient(patientBean.getFirstName(), patientBean.getLastName(), patientBean.getDob(), patientBean.getSex(), patientBean.getAddress(), patientBean.getPhone());
                 return "redirect:/searchById/" + patientBean1.getPatId();
             } catch (FeignException e) {
-                ObjectError objectError = new ObjectError("error",e.getMessage());
+                ObjectError objectError = new ObjectError("error", e.getMessage());
 //                ObjectError objectError = new ObjectError("error", ("Patient " + patientBean.getFirstName() + ' ' + patientBean.getLastName() + " already exist with this birthdate : " + patientBean.getDob()));
                 result.addError(objectError);
                 model.addAttribute("patientBean", patientBean);

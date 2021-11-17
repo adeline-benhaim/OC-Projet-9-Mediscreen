@@ -1,0 +1,34 @@
+package com.mediscreen.clientui.controller;
+
+import com.mediscreen.clientui.beans.AppointmentBean;
+import com.mediscreen.clientui.beans.PatientBean;
+import com.mediscreen.clientui.service.ClientInfoService;
+import com.mediscreen.clientui.service.ClientNoteService;
+import feign.FeignException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
+@Controller
+public class ClientNoteController {
+
+    @Autowired
+    ClientNoteService clientNoteService;
+    @Autowired
+    ClientInfoService clientInfoService;
+
+    @GetMapping("/note/{id}")
+    public String getNoteViewById(@PathVariable("id") int appointmentId, Model model) {
+        try {
+            AppointmentBean appointmentBean = clientNoteService.getAppointmentById(appointmentId);
+            model.addAttribute("appointmentBean", appointmentBean);
+            PatientBean patientBean = clientInfoService.getPatientById(appointmentBean.getPatId());
+            model.addAttribute("patientBean", patientBean);
+            return "NoteView";
+        } catch (FeignException feignException$NotFound) {
+            return "redirect:/patients";
+        }
+    }
+}

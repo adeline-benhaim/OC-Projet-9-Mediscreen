@@ -1,16 +1,13 @@
-//package com.mediscreen.patientInfo;
+//package com.clientui.clientui;
 //
 //import org.junit.jupiter.api.Test;
 //import org.springframework.boot.test.context.SpringBootTest;
 //
 //@SpringBootTest
-//class PatientInfoApplicationTests {
+//class ClientuiApplicationTests {
 //
 //	@Test
 //	void contextLoads() {
 //	}
-//	@Test
-//	public void main() {
-//		PatientInfoApplication.main(new String[]{});
-//	}
+//
 //}

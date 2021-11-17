@@ -5,8 +5,10 @@
       <list>
         <option value="$PROJECT_DIR$/patientInfo/pom.xml" />
         <option value="$PROJECT_DIR$/clientui/pom.xml" />
+        <option value="$PROJECT_DIR$/patientHistory/pom.xml" />
+        <option value="$PROJECT_DIR$/patientNote/pom.xml" />
       </list>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_15" project-jdk-name="15" project-jdk-type="JavaSDK" />
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_15" project-jdk-name="11" project-jdk-type="JavaSDK" />
 </project>
