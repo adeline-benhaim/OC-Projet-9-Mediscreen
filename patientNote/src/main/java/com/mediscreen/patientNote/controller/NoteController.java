@@ -23,12 +23,8 @@ public class NoteController {
 
     @GetMapping("/patientNote/{patId}")
     public ResponseEntity <Pair<List<Appointment>,Long>> findByPatId(@PathVariable("patId") int patId, Pageable pageable) {
-        try {
             Pair<List<Appointment>, Long> appointmentList = noteService.findByPatId(patId, pageable);
             return ResponseEntity.ok(appointmentList);
-        } catch (AppointmentNotFoundException e) {
-            return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
-        }
     }
 
     @GetMapping("/appointment/{id}")

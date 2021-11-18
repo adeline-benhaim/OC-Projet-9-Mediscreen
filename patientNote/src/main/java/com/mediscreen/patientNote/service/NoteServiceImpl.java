@@ -3,8 +3,6 @@ package com.mediscreen.patientNote.service;
 import com.mediscreen.patientNote.exceptions.AppointmentNotFoundException;
 import com.mediscreen.patientNote.model.Appointment;
 import com.mediscreen.patientNote.repository.NoteRepository;
-import org.bson.codecs.MapCodecProvider;
-import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +52,7 @@ public class NoteServiceImpl implements NoteService {
         Optional<Appointment> appointment = noteRepository.findByAppointmentId(appointmentId);
         if (appointment.isPresent()) return appointment;
         logger.error("No appointment found with this  id : {} ", appointmentId);
-        throw new AppointmentNotFoundException("");
+        throw new AppointmentNotFoundException("No appointment found with this  id : {} " + appointmentId);
 
     }
 

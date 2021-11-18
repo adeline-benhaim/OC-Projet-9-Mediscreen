@@ -1,7 +1,6 @@
 package com.mediscreen.patientNote.service;
 
 import com.mediscreen.patientNote.model.Appointment;
-import org.bson.types.ObjectId;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.util.Pair;
 

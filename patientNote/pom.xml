@@ -45,7 +45,13 @@
 			<groupId>jakarta.persistence</groupId>
 			<artifactId>jakarta.persistence-api</artifactId>
 		</dependency>
-	</dependencies>
+        <dependency>
+            <groupId>com.mediscreen</groupId>
+            <artifactId>patientInfo</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
 	<build>
 		<plugins>
