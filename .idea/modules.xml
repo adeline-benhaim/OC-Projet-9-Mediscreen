@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/Projet 9.iml" filepath="$PROJECT_DIR$/.idea/Projet 9.iml" />
       <module fileurl="file://$PROJECT_DIR$/clientui/clientui.iml" filepath="$PROJECT_DIR$/clientui/clientui.iml" />
       <module fileurl="file://$PROJECT_DIR$/patientInfo/patientInfo.iml" filepath="$PROJECT_DIR$/patientInfo/patientInfo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/patientNote/patientNote.iml" filepath="$PROJECT_DIR$/patientNote/patientNote.iml" />
     </modules>
   </component>
 </project>

@@ -79,7 +79,7 @@
                 <div class="form-group col-xs-6">
                     <label for="birthdatePatientInput">Birthdate</label>
                     <input
-                            type="text" th:field="*{dob}" class="form-control" id="birthdatePatientInput"
+                            type="date" th:field="*{dob}" class="form-control" id="birthdatePatientInput"
                             aria-describedby="birthdatePatientHelp" placeholder="Enter the patient's birthdate (AAAA-MM-JJ)" required>
                     <p th:if="${#fields.hasErrors('dob')}" class="label label-danger" th:errors="*{dob}"></p>
                 </div>

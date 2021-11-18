@@ -23,8 +23,8 @@ public class DataSourceTest {
     }
 
     public List<Patient> getAllPatientsMocked() {
-        Patient patient1 = Patient.builder().firstName("firstname1").lastName("lastname1").build();
-        Patient patient2 = Patient.builder().firstName("firstname1").lastName("lastname1").build();
+        Patient patient1 = Patient.builder().firstName("firstname1").lastName("lastname1").dob("1950-01-01").build();
+        Patient patient2 = Patient.builder().firstName("firstname1").lastName("lastname1").dob("1950-02-02").build();
         patientMocked.addAll(Arrays.asList(patient1, patient2));
         return patientMocked;
     }

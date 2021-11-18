@@ -1,9 +1,14 @@
 package com.mediscreen.clientui.controller;
 
+import com.mediscreen.clientui.beans.AppointmentBean;
 import com.mediscreen.clientui.beans.PatientBean;
-import com.mediscreen.clientui.proxies.PatientInfoProxy;
+import com.mediscreen.clientui.service.ClientInfoService;
+import com.mediscreen.clientui.service.ClientNoteService;
 import feign.FeignException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.util.Pair;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -20,12 +25,14 @@ import java.util.List;
 public class ClientInfoController {
 
     @Autowired
-    PatientInfoProxy patientInfoProxy;
+    ClientInfoService clientInfoService;
+    @Autowired
+    ClientNoteService clientNoteService;
 
     @GetMapping("/search/{firstName}/{lastName}")
     public String searchByFirstNameAndLastName(@ModelAttribute PatientBean patientBean, Model model) {
         try {
-            List<PatientBean> patientBeanList = patientInfoProxy.getPatientList(patientBean.getFirstName(), patientBean.getLastName());
+            List<PatientBean> patientBeanList = clientInfoService.getPatientList(patientBean.getFirstName(), patientBean.getLastName());
             model.addAttribute("patientBeanList", patientBeanList);
             return "SearchPatient";
         } catch (FeignException feignException$NotFound) {
@@ -48,9 +55,9 @@ public class ClientInfoController {
     @GetMapping("/patients")
     public String getAllPatients(@ModelAttribute PatientBean patientBean, Model model) {
         try {
-            Iterable<PatientBean> allPatientsBeanList = patientInfoProxy.getAllPatient();
+            Iterable<PatientBean> allPatientsBeanList = clientInfoService.getAllPatient();
             model.addAttribute("allPatientsBeanList", allPatientsBeanList);
-            List<PatientBean> patientBeanList = patientInfoProxy.getPatientList(patientBean.getFirstName(), patientBean.getLastName());
+            List<PatientBean> patientBeanList = clientInfoService.getPatientList(patientBean.getFirstName(), patientBean.getLastName());
             model.addAttribute("patientBeanList", patientBeanList);
             return "ListPatients";
         } catch (FeignException feignException$NotFound) {
@@ -61,10 +68,14 @@ public class ClientInfoController {
     }
 
     @GetMapping("/searchById/{id}")
-    public String searchById(@PathVariable("id") int patId, Model model) {
+    public String searchById(@PathVariable("id") int patId, Model model, @PageableDefault(size = 3) Pageable pageable) {
+        String baseUri = "/searchById/" + patId + "?page=";
         try {
-            PatientBean patientBean = patientInfoProxy.getPatientById(patId);
+            PatientBean patientBean = clientInfoService.getPatientById(patId);
             model.addAttribute("patientBean", patientBean);
+            Pair<List<AppointmentBean>, Long> appointmentBeanList = clientNoteService.getNotesBean(patientBean.getPatId(), pageable);
+            model.addAttribute("appointmentBeanList", appointmentBeanList.getFirst());
+            PaginationUtils.paginationBuilder(model, pageable, appointmentBeanList.getSecond(), baseUri);
             return "PatientInfo";
         } catch (FeignException feignException$NotFound) {
             return "redirect:/patients";
@@ -74,7 +85,7 @@ public class ClientInfoController {
     @GetMapping("/updatePatient/{id}")
     public String getFormToUpdatePatient(@PathVariable("id") int patId, Model model) {
         try {
-            PatientBean patientBeanToUpdate = patientInfoProxy.getPatientById(patId);
+            PatientBean patientBeanToUpdate = clientInfoService.getPatientById(patId);
             model.addAttribute("patientBean", patientBeanToUpdate);
             return "FormUpdatePatient";
         } catch (FeignException feignException$NotFound) {
@@ -83,9 +94,19 @@ public class ClientInfoController {
     }
 
     @PostMapping("/updatePatient")
-    public String updatePatient(@ModelAttribute PatientBean patientBean) {
-        patientInfoProxy.updatePatient(patientBean);
-        return "redirect:/patients";
+    public String updatePatient(@ModelAttribute PatientBean patientBean, Model model, BindingResult result) {
+        if (!result.hasErrors()) {
+            try {
+                clientInfoService.updatePatient(patientBean);
+                return "redirect:/patients";
+            } catch (FeignException e) {
+                ObjectError objectError = new ObjectError("error", ("Patient " + patientBean.getFirstName() + ' ' + patientBean.getLastName() + " already exist with this birthdate : " + patientBean.getDob()));
+                result.addError(objectError);
+                model.addAttribute("patientBean", patientBean);
+                return "FormUpdatePatient";
+            }
+        }
+        return "redirect:/updatePatient";
     }
 
     @GetMapping("/addPatient")
@@ -99,10 +120,11 @@ public class ClientInfoController {
     public String addPatient(@ModelAttribute PatientBean patientBean, Model model, BindingResult result) {
         if (!result.hasErrors()) {
             try {
-                PatientBean patientBean1 = patientInfoProxy.postPatient(patientBean.getFirstName(), patientBean.getLastName(), patientBean.getDob(), patientBean.getSex(), patientBean.getAddress(), patientBean.getPhone());
+                PatientBean patientBean1 = clientInfoService.postPatient(patientBean.getFirstName(), patientBean.getLastName(), patientBean.getDob(), patientBean.getSex(), patientBean.getAddress(), patientBean.getPhone());
                 return "redirect:/searchById/" + patientBean1.getPatId();
             } catch (FeignException e) {
                 ObjectError objectError = new ObjectError("error", e.getMessage());
+//                ObjectError objectError = new ObjectError("error", ("Patient " + patientBean.getFirstName() + ' ' + patientBean.getLastName() + " already exist with this birthdate : " + patientBean.getDob()));
                 result.addError(objectError);
                 model.addAttribute("patientBean", patientBean);
                 return "FormNewPatient";

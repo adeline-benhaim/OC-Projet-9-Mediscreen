@@ -31,7 +31,7 @@ public interface PatientRepository extends CrudRepository<Patient, Integer> {
      * @param firstName of wanted patient
      * @param lastName of wanted patient
      * @param birthdate of wanted patient
-     * @return a patient if exist
+     * @return a list patient if exist by firstname, lastname and birthdate
      */
-    Patient findByFirstNameAndLastNameAndDob(String firstName, String lastName, String birthdate);
+    List<Patient> findByFirstNameAndLastNameAndDob(String firstName, String lastName, String birthdate);
 }
