@@ -82,7 +82,7 @@ public class NoteServiceImpl implements NoteService {
         Optional<Appointment> appointmentToUpdate = noteRepository.findByAppointmentId(appointment.getAppointmentId());
         if (appointmentToUpdate.isEmpty()) {
             logger.error("Unable to update this note because appointment id : {} doesn't exist", appointment.getAppointmentId());
-            throw new AppointmentNotFoundException("Unable to update this note because appointment id : {} " + appointment.getAppointmentId() + " doesn't exist");
+            throw new AppointmentNotFoundException("Unable to update this note because appointment id : " + appointment.getAppointmentId() + " doesn't exist");
         }
         appointment.setDate(LocalDateTime.now(ZoneId.of("Europe/Paris")));
         appointment.setPatId(appointmentToUpdate.get().getPatId());

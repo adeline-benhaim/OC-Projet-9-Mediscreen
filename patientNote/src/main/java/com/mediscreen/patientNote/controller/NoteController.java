@@ -53,7 +53,7 @@ public class NoteController {
      * @param appointment to create
      * @return appointment created
      */
-    @PostMapping("appointment/add")
+    @PostMapping("/appointment/add")
     public ResponseEntity<Appointment> postAppointment(@RequestBody Appointment appointment) {
         Appointment appointmentToCreate = noteService.createAppointment(appointment);
         return ResponseEntity.ok(appointmentToCreate);
@@ -65,7 +65,7 @@ public class NoteController {
      * @param appointment's note to update
      * @return appointment with patient's note updated
      */
-    @PutMapping("note/update")
+    @PutMapping("/note/update")
     public ResponseEntity<Appointment> updateNote(@RequestBody Appointment appointment) {
         try {
             Appointment appointmentToUpdate = noteService.updateNote(appointment);
