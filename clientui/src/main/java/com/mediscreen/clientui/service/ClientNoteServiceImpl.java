@@ -21,7 +21,11 @@ public class ClientNoteServiceImpl implements ClientNoteService {
     }
 
     @Override
-    public AppointmentBean getAppointmentById(int appointmentId) {
+    public AppointmentBean getAppointmentById(String appointmentId) {
         return patientNoteProxy.findAppointmentById(appointmentId);
+    }
+    @Override
+    public AppointmentBean addNewAppointment(AppointmentBean appointmentBean) {
+        return patientNoteProxy.postAppointment(appointmentBean);
     }
 }

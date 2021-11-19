@@ -76,6 +76,9 @@ public class ClientInfoController {
             Pair<List<AppointmentBean>, Long> appointmentBeanList = clientNoteService.getNotesBean(patientBean.getPatId(), pageable);
             model.addAttribute("appointmentBeanList", appointmentBeanList.getFirst());
             PaginationUtils.paginationBuilder(model, pageable, appointmentBeanList.getSecond(), baseUri);
+            AppointmentBean appointmentBean = new AppointmentBean();
+            appointmentBean.setPatId(patId);
+            model.addAttribute("appointmentBean",appointmentBean);
             return "PatientInfo";
         } catch (FeignException feignException$NotFound) {
             return "redirect:/patients";
@@ -98,7 +101,7 @@ public class ClientInfoController {
         if (!result.hasErrors()) {
             try {
                 clientInfoService.updatePatient(patientBean);
-                return "redirect:/patients";
+                return "redirect:/searchById/"+ patientBean.getPatId();
             } catch (FeignException e) {
                 ObjectError objectError = new ObjectError("error", ("Patient " + patientBean.getFirstName() + ' ' + patientBean.getLastName() + " already exist with this birthdate : " + patientBean.getDob()));
                 result.addError(objectError);
@@ -123,8 +126,7 @@ public class ClientInfoController {
                 PatientBean patientBean1 = clientInfoService.postPatient(patientBean.getFirstName(), patientBean.getLastName(), patientBean.getDob(), patientBean.getSex(), patientBean.getAddress(), patientBean.getPhone());
                 return "redirect:/searchById/" + patientBean1.getPatId();
             } catch (FeignException e) {
-                ObjectError objectError = new ObjectError("error", e.getMessage());
-//                ObjectError objectError = new ObjectError("error", ("Patient " + patientBean.getFirstName() + ' ' + patientBean.getLastName() + " already exist with this birthdate : " + patientBean.getDob()));
+                ObjectError objectError = new ObjectError("error", ("Patient " + patientBean.getFirstName() + ' ' + patientBean.getLastName() + " already exist with this birthdate : " + patientBean.getDob()));
                 result.addError(objectError);
                 model.addAttribute("patientBean", patientBean);
                 return "FormNewPatient";
