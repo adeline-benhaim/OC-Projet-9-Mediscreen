@@ -25,6 +25,6 @@ public interface NoteRepository extends MongoRepository<Appointment, Integer> {
      * @param appointmentId id of wanted appointment
      * @return appointment if exist
      */
-    Optional<Appointment> findByAppointmentId(int appointmentId);
+    Optional<Appointment> findByAppointmentId(String appointmentId);
 
 }

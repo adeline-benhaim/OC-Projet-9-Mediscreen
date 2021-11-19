@@ -14,11 +14,14 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.*;
 import org.springframework.data.util.Pair;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.mediscreen.patientNote.config.DataSourceTest.asJsonString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -38,10 +41,11 @@ public class NoteControllerTest {
 
         //GIVEN
         List<Appointment> appointmentList = new ArrayList<>();
+
         Appointment appointment = Appointment.builder().patId(1).build();
         appointmentList.add(appointment);
         Pageable pageable = PageRequest.of(0, 1, Sort.by(Sort.Order.desc("date")));
-        Page<Appointment> appointmentPage = new PageImpl<>(appointmentList,pageable,appointment.getAppointmentId());
+        Page<Appointment> appointmentPage = new PageImpl(appointmentList,pageable,1);
         Pair<List<Appointment>, Long> listLongPair = Pair.of(appointmentList,appointmentPage.getTotalElements());
 
         //WHEN
@@ -57,10 +61,10 @@ public class NoteControllerTest {
     public void getAppointmentByIdTest() throws Exception {
 
         //GIVEN
-        Appointment appointment = Appointment.builder().appointmentId(1).build();
+        Appointment appointment = Appointment.builder().appointmentId("1").build();
 
         //WHEN
-        Mockito.when(noteService.findByAppointmentId(1)).thenReturn(java.util.Optional.ofNullable(appointment));
+        Mockito.when(noteService.findByAppointmentId("1")).thenReturn(java.util.Optional.ofNullable(appointment));
 
         //THEN
         mockMvc.perform(get("/appointment/1"))
@@ -72,10 +76,29 @@ public class NoteControllerTest {
     public void getAppointmentByUnknownIdTest() throws Exception {
 
         //WHEN
-        when(noteService.findByAppointmentId(1)).thenThrow(new AppointmentNotFoundException(""));
+        when(noteService.findByAppointmentId("1")).thenThrow(new AppointmentNotFoundException(""));
 
         //THEN
         mockMvc.perform(get("/appointment/1"))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DisplayName("POST request (/appointment/add) with a new appointment must return an HTTP 200 response")
+    public void testPostANewPerson() throws Exception {
+
+        //GIVEN
+        Appointment appointment = Appointment.builder()
+                .patId(1)
+                .note("test")
+                .build();
+
+        //THEN
+        mockMvc.perform(MockMvcRequestBuilders
+                .post("/appointment/add")
+                .content(asJsonString(appointment))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
     }
 }

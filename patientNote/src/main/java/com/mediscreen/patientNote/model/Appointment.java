@@ -1,10 +1,11 @@
 package com.mediscreen.patientNote.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.GeneratedValue;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -14,12 +15,13 @@ import java.util.Date;
 @Document(collection = "mediscreen")
 public class Appointment {
 
-    @GeneratedValue
-    private int appointmentId;
+    @Id
+    private String appointmentId;
 
     private int patId;
 
-    private Date date;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
+    private LocalDateTime date;
 
     private String note;
 

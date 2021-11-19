@@ -23,5 +23,13 @@ public interface NoteService {
      * @param appointmentId id of wanted appointment
      * @return appointment if exist
      */
-    Optional<Appointment> findByAppointmentId(int appointmentId);
+    Optional<Appointment> findByAppointmentId(String appointmentId);
+
+    /**
+     * Create a new appointment
+     *
+     * @param appointment to create
+     * @return appointment created
+     */
+    Appointment createAppointment(Appointment appointment);
 }

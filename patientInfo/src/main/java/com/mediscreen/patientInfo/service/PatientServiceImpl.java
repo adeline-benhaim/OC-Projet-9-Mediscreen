@@ -82,11 +82,11 @@ public class PatientServiceImpl implements PatientService {
                     .sex(patient.getSex())
                     .phone(patient.getPhone())
                     .build();
-            if (patientRepository.findByFirstNameAndLastNameAndDob(patientUpdated.getFirstName(), patientUpdated.getLastName(), patientUpdated.getDob()).size() > 0 ) {
+            patientRepository.save(patientUpdated);
+            if (patientRepository.findByFirstNameAndLastNameAndDob(patientUpdated.getFirstName(), patientUpdated.getLastName(), patientUpdated.getDob()).size() > 1 ) {
                 logger.error("Patient {} {} already exist with this birthdate : {}", patient.getFirstName(), patient.getLastName(), patient.getDob());
                 throw new PatientAlreadyExistException("Patient " + patient.getFirstName() + ' ' + patient.getLastName() + " already exist with this birthdate : " + patient.getDob());
             }
-            patientRepository.save(patientUpdated);
             logger.info("Patient id : {} ", patientUpdated.getPatId() + " updated");
             return patientUpdated;
         }

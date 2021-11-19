@@ -10,5 +10,7 @@ public interface ClientNoteService {
 
     Pair<List<AppointmentBean>, Long> getNotesBean (int patId, Pageable pageable);
 
-    AppointmentBean getAppointmentById(int appointmentId);
+    AppointmentBean getAppointmentById(String appointmentId);
+
+    AppointmentBean addNewAppointment(AppointmentBean appointmentBean);
 }

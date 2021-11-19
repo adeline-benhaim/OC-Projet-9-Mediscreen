@@ -1,21 +1,23 @@
 package com.mediscreen.clientui.beans;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @Getter
 @Setter
 public class AppointmentBean {
 
-    private int appointmentId;
+    private String appointmentId;
 
     private int patId;
 
-    private Date date;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
+    private LocalDateTime date;
 
     private String note;
 
