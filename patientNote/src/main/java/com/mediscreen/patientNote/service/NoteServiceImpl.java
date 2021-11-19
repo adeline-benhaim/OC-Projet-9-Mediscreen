@@ -70,5 +70,24 @@ public class NoteServiceImpl implements NoteService {
         return noteRepository.save(appointment);
     }
 
+    /**
+     * Update the history of a patient's note
+     *
+     * @param appointment's note to update
+     * @return appointment with patient's note updated
+     */
+    @Override
+    public Appointment updateNote(Appointment appointment) {
+        logger.info("Try to update note id : {} , for patient id {} ", appointment.getAppointmentId(), appointment.getPatId());
+        Optional<Appointment> appointmentToUpdate = noteRepository.findByAppointmentId(appointment.getAppointmentId());
+        if (appointmentToUpdate.isEmpty()) {
+            logger.error("Unable to update this note because appointment id : {} doesn't exist", appointment.getAppointmentId());
+            throw new AppointmentNotFoundException("Unable to update this note because appointment id : {} " + appointment.getAppointmentId() + " doesn't exist");
+        }
+        appointment.setDate(LocalDateTime.now(ZoneId.of("Europe/Paris")));
+        appointment.setPatId(appointmentToUpdate.get().getPatId());
+        logger.info("Note updated successfully!");
+        return noteRepository.save(appointment);
+    }
 
 }

@@ -32,4 +32,12 @@ public interface NoteService {
      * @return appointment created
      */
     Appointment createAppointment(Appointment appointment);
+
+    /**
+     * Update the history of a patient's note
+     *
+     * @param appointment's note to update
+     * @return appointment with patient's note updated
+     */
+    Appointment updateNote(Appointment appointment);
 }

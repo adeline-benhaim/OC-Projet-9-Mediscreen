@@ -59,5 +59,21 @@ public class NoteController {
         return ResponseEntity.ok(appointmentToCreate);
     }
 
+    /**
+     * Put the history of a patient's note
+     *
+     * @param appointment's note to update
+     * @return appointment with patient's note updated
+     */
+    @PutMapping("note/update")
+    public ResponseEntity<Appointment> updateNote(@RequestBody Appointment appointment) {
+        try {
+            Appointment appointmentToUpdate = noteService.updateNote(appointment);
+            return ResponseEntity.ok(appointmentToUpdate);
+        } catch (AppointmentNotFoundException e) {
+            return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
 }
 
