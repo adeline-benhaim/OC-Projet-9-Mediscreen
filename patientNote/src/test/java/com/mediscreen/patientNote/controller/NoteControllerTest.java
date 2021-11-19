@@ -1,8 +1,6 @@
 package com.mediscreen.patientNote.controller;
 
-import com.mediscreen.patientInfo.exceptions.PatientNotFoundException;
-import com.mediscreen.patientInfo.model.Patient;
-import com.mediscreen.patientInfo.service.PatientServiceImpl;
+import com.fasterxml.jackson.annotation.OptBoolean;
 import com.mediscreen.patientNote.exceptions.AppointmentNotFoundException;
 import com.mediscreen.patientNote.model.Appointment;
 import com.mediscreen.patientNote.service.NoteServiceImpl;
@@ -20,6 +18,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static com.mediscreen.patientNote.config.DataSourceTest.asJsonString;
 import static org.mockito.Mockito.when;
@@ -85,7 +84,7 @@ public class NoteControllerTest {
 
     @Test
     @DisplayName("POST request (/appointment/add) with a new appointment must return an HTTP 200 response")
-    public void testPostANewPerson() throws Exception {
+    public void postAppointmentNoteTest() throws Exception {
 
         //GIVEN
         Appointment appointment = Appointment.builder()
@@ -96,6 +95,26 @@ public class NoteControllerTest {
         //THEN
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/appointment/add")
+                .content(asJsonString(appointment))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("PUT request (/note/update) with a existing appointment id must return an HTTP 200 response")
+    public void putNoteForExistingAppointmentId() throws Exception {
+
+        //GIVEN
+        Appointment appointment = Appointment.builder()
+                .appointmentId("1")
+                .patId(1)
+                .note("new note")
+                .build();
+
+        //THEN
+        mockMvc.perform(MockMvcRequestBuilders
+                .put("/note/update")
                 .content(asJsonString(appointment))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))

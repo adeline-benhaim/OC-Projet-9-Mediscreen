@@ -37,7 +37,7 @@
 
 <div class="container special">
     <br>
-    <a th:href="@{'/search/' + ${patientBean.firstName} + '/' + ${patientBean.lastName}}">
+    <a th:href="@{'/searchById/' + ${patientBean.patId}}">
         <button class="btn btn-secondary btn-sm" type="submit"> < Back</button>
     </a>
     <h2 class="h2">Update patient : <span th:text="${patientBean.firstName}"></span> <span
@@ -46,7 +46,7 @@
         <form method="post"
               th:action="@{/updatePatient}" th:object="${patientBean}">
 
-            <div class="alert alert-danger" th:if="${#fields.hasErrors('global')}" >
+            <div class="alert alert-danger" th:if="${#fields.hasErrors('global')}">
                 <p th:errors="*{global}"></p>
             </div>
 

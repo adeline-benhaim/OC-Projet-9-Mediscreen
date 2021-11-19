@@ -78,7 +78,7 @@ public class ClientInfoController {
             PaginationUtils.paginationBuilder(model, pageable, appointmentBeanList.getSecond(), baseUri);
             AppointmentBean appointmentBean = new AppointmentBean();
             appointmentBean.setPatId(patId);
-            model.addAttribute("appointmentBean",appointmentBean);
+            model.addAttribute("appointmentBean", appointmentBean);
             return "PatientInfo";
         } catch (FeignException feignException$NotFound) {
             return "redirect:/patients";
@@ -101,7 +101,7 @@ public class ClientInfoController {
         if (!result.hasErrors()) {
             try {
                 clientInfoService.updatePatient(patientBean);
-                return "redirect:/searchById/"+ patientBean.getPatId();
+                return "redirect:/searchById/" + patientBean.getPatId();
             } catch (FeignException e) {
                 ObjectError objectError = new ObjectError("error", ("Patient " + patientBean.getFirstName() + ' ' + patientBean.getLastName() + " already exist with this birthdate : " + patientBean.getDob()));
                 result.addError(objectError);

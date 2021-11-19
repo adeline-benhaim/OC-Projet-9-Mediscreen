@@ -26,9 +26,9 @@ public class NoteController {
      * @return a list of appointment found by patient id
      */
     @GetMapping("/patientNote/{patId}")
-    public ResponseEntity <Pair<List<Appointment>,Long>> findByPatId(@PathVariable("patId") int patId, Pageable pageable) {
-            Pair<List<Appointment>, Long> appointmentList = noteService.findByPatId(patId, pageable);
-            return ResponseEntity.ok(appointmentList);
+    public ResponseEntity<Pair<List<Appointment>, Long>> findByPatId(@PathVariable("patId") int patId, Pageable pageable) {
+        Pair<List<Appointment>, Long> appointmentList = noteService.findByPatId(patId, pageable);
+        return ResponseEntity.ok(appointmentList);
     }
 
     /**
@@ -53,10 +53,26 @@ public class NoteController {
      * @param appointment to create
      * @return appointment created
      */
-    @PostMapping("appointment/add")
+    @PostMapping("/appointment/add")
     public ResponseEntity<Appointment> postAppointment(@RequestBody Appointment appointment) {
         Appointment appointmentToCreate = noteService.createAppointment(appointment);
         return ResponseEntity.ok(appointmentToCreate);
+    }
+
+    /**
+     * Put the history of a patient's note
+     *
+     * @param appointment's note to update
+     * @return appointment with patient's note updated
+     */
+    @PutMapping("/note/update")
+    public ResponseEntity<Appointment> updateNote(@RequestBody Appointment appointment) {
+        try {
+            Appointment appointmentToUpdate = noteService.updateNote(appointment);
+            return ResponseEntity.ok(appointmentToUpdate);
+        } catch (AppointmentNotFoundException e) {
+            return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
     }
 
 }

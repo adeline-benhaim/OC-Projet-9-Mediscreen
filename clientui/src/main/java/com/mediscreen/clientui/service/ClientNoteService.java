@@ -13,4 +13,6 @@ public interface ClientNoteService {
     AppointmentBean getAppointmentById(String appointmentId);
 
     AppointmentBean addNewAppointment(AppointmentBean appointmentBean);
+
+    AppointmentBean updateNote(AppointmentBean appointmentBean);
 }
