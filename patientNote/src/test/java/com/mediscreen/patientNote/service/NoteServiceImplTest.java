@@ -45,8 +45,6 @@ class NoteServiceImplTest {
         List<Appointment> appointments = appointmentPage.stream().collect(Collectors.toList());
         Pair<List<Appointment>, Long> pair = Pair.of(appointments, appointmentPage.getTotalElements());
 
-
-
         //WHEN
         Pair<List<Appointment>, Long> listLongPair = noteService.findByPatId(1, pageable);
 
@@ -59,11 +57,11 @@ class NoteServiceImplTest {
     void findByAppointmentIdTest() {
 
         //GIVEN
-        Optional<Appointment> appointment1 = Optional.ofNullable(Appointment.builder().appointmentId(1).note("note1").build());
-        Mockito.when(noteRepository.findByAppointmentId(1)).thenReturn((appointment1));
+        Optional<Appointment> appointment1 = Optional.ofNullable(Appointment.builder().appointmentId("1").note("note1").build());
+        Mockito.when(noteRepository.findByAppointmentId("1")).thenReturn((appointment1));
 
         //WHEN
-        Optional<Appointment> appointmentOptional = noteService.findByAppointmentId(1);
+        Optional<Appointment> appointmentOptional = noteService.findByAppointmentId("1");
 
         //THEN
         assertEquals(appointmentOptional, appointment1);
@@ -74,9 +72,24 @@ class NoteServiceImplTest {
     void findByUnknownAppointmentIdTest() {
 
         //WHEN
-        Mockito.when(noteRepository.findByAppointmentId(100)).thenReturn(Optional.empty());
+        Mockito.when(noteRepository.findByAppointmentId("100")).thenReturn(Optional.empty());
 
         //THEN
-        assertThrows(AppointmentNotFoundException.class, () -> noteService.findByAppointmentId(100));
+        assertThrows(AppointmentNotFoundException.class, () -> noteService.findByAppointmentId("100"));
+    }
+
+    @Test
+    @DisplayName(("Create a new appointment"))
+    void createNewAppointmentTest() {
+
+        //GIVEN
+        Appointment appointment = Appointment.builder().appointmentId("1").patId(1).note("test").build();
+
+        //WHEN
+        noteService.createAppointment(appointment);
+
+        //THEN
+        Mockito.verify(noteRepository, Mockito.times(1)).save(appointment);
+
     }
 }
