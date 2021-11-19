@@ -26,9 +26,9 @@ public class NoteController {
      * @return a list of appointment found by patient id
      */
     @GetMapping("/patientNote/{patId}")
-    public ResponseEntity <Pair<List<Appointment>,Long>> findByPatId(@PathVariable("patId") int patId, Pageable pageable) {
-            Pair<List<Appointment>, Long> appointmentList = noteService.findByPatId(patId, pageable);
-            return ResponseEntity.ok(appointmentList);
+    public ResponseEntity<Pair<List<Appointment>, Long>> findByPatId(@PathVariable("patId") int patId, Pageable pageable) {
+        Pair<List<Appointment>, Long> appointmentList = noteService.findByPatId(patId, pageable);
+        return ResponseEntity.ok(appointmentList);
     }
 
     /**

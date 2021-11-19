@@ -28,4 +28,9 @@ public class ClientNoteServiceImpl implements ClientNoteService {
     public AppointmentBean addNewAppointment(AppointmentBean appointmentBean) {
         return patientNoteProxy.postAppointment(appointmentBean);
     }
+
+    @Override
+    public AppointmentBean updateNote(AppointmentBean appointmentBean) {
+        return patientNoteProxy.updateNote(appointmentBean);
+    }
 }
