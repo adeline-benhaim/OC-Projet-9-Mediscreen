@@ -11,6 +11,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -47,13 +49,25 @@ public class NoteServiceImpl implements NoteService {
      * @return appointment if exist
      */
     @Override
-    public Optional<Appointment> findByAppointmentId(int appointmentId) {
+    public Optional<Appointment> findByAppointmentId(String appointmentId) {
         logger.info("Get a appointment by id : {} ", appointmentId);
         Optional<Appointment> appointment = noteRepository.findByAppointmentId(appointmentId);
         if (appointment.isPresent()) return appointment;
         logger.error("No appointment found with this  id : {} ", appointmentId);
         throw new AppointmentNotFoundException("No appointment found with this  id : {} " + appointmentId);
+    }
 
+    /**
+     * Create a new appointment
+     *
+     * @param appointment to create
+     * @return appointment created
+     */
+    @Override
+    public Appointment createAppointment(Appointment appointment) {
+        logger.info("Create a new appointment id {} for patient id : {} ", appointment.getAppointmentId(), appointment.getPatId());
+        appointment.setDate(LocalDateTime.now(ZoneId.of("Europe/Paris")));
+        return noteRepository.save(appointment);
     }
 
 
