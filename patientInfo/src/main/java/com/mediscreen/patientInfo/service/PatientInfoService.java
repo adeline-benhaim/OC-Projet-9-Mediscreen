@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
-public interface PatientService {
+public interface PatientInfoService {
 
     /**
      * Find all patients

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface PatientRepository extends CrudRepository<Patient, Integer> {
+public interface PatientInfoRepository extends CrudRepository<Patient, Integer> {
 
     /**
      * Find patients by first and last name

@@ -1,0 +1,71 @@
+version: "3"
+services:
+
+  mysql_db:
+    image: "mysql:8.0"
+    volumes:
+      - mysql_db_data:/var/lib/mysql
+    restart: always
+    ports:
+      - "3308:3306"
+    environment:
+      MYSQL_DATABASE: mediscreen
+      MYSQL_ROOT_PASSWORD: rootroot
+    cap_add:
+      - SYS_NICE
+
+  mongodb:
+      image: mongo:latest
+      volumes:
+        - mongo_db_data:/data/db
+        - mongo_config:/data/configdb
+      ports:
+        - "27018:27017"
+
+  clientui:
+    depends_on:
+      - patientinfo
+      - patientnote
+    image: client_ui:1.0
+    build:
+      context: clientui
+    ports:
+      - "8080:8080"
+    restart: always
+    environment:
+
+      PATIENT_INFO_PROXY_URL: http://patientinfo:8081
+      PATIENT_NOTE_PROXY_URL: http://patientnote:8082
+
+  patientinfo:
+    image: patient_info:1.0
+    build:
+      context: patientInfo
+    depends_on:
+      - mysql_db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql_db/mediscreen?serverTimezone=Europe/Paris
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=rootroot
+    ports:
+      - "8081:8081"
+    restart: always
+
+  patientnote:
+    image: patient_note:1.0
+    build:
+      context: patientNote
+    depends_on:
+      - mongodb
+    environment:
+      SPRING_DATA_MONGODB_HOST: mongodb
+      SPRING_DATA_MONGODB_PORT: 27017
+      SPRING_DATA_MONGODB_DATABASE: mediscreen
+    ports:
+      - "8082:8082"
+    restart: always
+
+volumes:
+  mysql_db_data: {}
+  mongo_db_data: {}
+  mongo_config: {}

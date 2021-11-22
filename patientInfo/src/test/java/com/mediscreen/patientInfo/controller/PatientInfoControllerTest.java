@@ -2,7 +2,7 @@ package com.mediscreen.patientInfo.controller;
 
 import com.mediscreen.patientInfo.exceptions.PatientNotFoundException;
 import com.mediscreen.patientInfo.model.Patient;
-import com.mediscreen.patientInfo.service.PatientServiceImpl;
+import com.mediscreen.patientInfo.service.PatientInfoServiceImpl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -22,14 +22,14 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = PatientController.class)
-public class PatientControllerTest {
+@WebMvcTest(controllers = PatientInfoController.class)
+public class PatientInfoControllerTest {
 
     @Autowired
     MockMvc mockMvc;
 
     @MockBean
-    PatientServiceImpl patientService;
+    PatientInfoServiceImpl patientService;
 
     @Test
     @DisplayName("GET request (/patientInfo) must return an HTTP 200 response")

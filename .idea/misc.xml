@@ -13,6 +13,7 @@
         <option value="$PROJECT_DIR$/clientui/pom.xml" />
         <option value="$PROJECT_DIR$/patientHistory/pom.xml" />
         <option value="$PROJECT_DIR$/patientNote/pom.xml" />
+        <option value="$PROJECT_DIR$/patientReport/pom.xml" />
       </list>
     </option>
   </component>

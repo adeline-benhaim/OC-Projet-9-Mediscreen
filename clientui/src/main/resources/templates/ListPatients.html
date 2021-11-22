@@ -80,9 +80,9 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:if="${allPatientsBeanList.empty}">
-                <td colspan="4">No result</td>
-            </tr>
+<!--            <tr th:if="${allPatientsBeanList.empty}">-->
+<!--                <td colspan="4">No result</td>-->
+<!--            </tr>-->
             <tr th:each="patient: ${allPatientsBeanList}">
                 <td><span th:text="${patient.firstName}"> FirstName </span></td>
                 <td><span th:text="${patient.lastName}"> LastName </span></td>

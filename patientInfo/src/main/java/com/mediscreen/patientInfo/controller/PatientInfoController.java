@@ -3,7 +3,7 @@ package com.mediscreen.patientInfo.controller;
 import com.mediscreen.patientInfo.exceptions.PatientAlreadyExistException;
 import com.mediscreen.patientInfo.exceptions.PatientNotFoundException;
 import com.mediscreen.patientInfo.model.Patient;
-import com.mediscreen.patientInfo.service.PatientService;
+import com.mediscreen.patientInfo.service.PatientInfoService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,22 +16,22 @@ import java.util.Optional;
 
 @Api("API for CRUD operations for patientInfo")
 @RestController
-public class PatientController {
+public class PatientInfoController {
 
     @Autowired
-    PatientService patientService;
+    PatientInfoService patientInfoService;
 
     @ApiOperation("Get all patients")
     @GetMapping("/patientInfo")
     public ResponseEntity<Iterable<Patient>> getAllPatient() {
-        return ResponseEntity.ok(patientService.getAllPatients());
+        return ResponseEntity.ok(patientInfoService.getAllPatients());
     }
 
     @ApiOperation("Get a list of patients found by firstname and lastname")
     @GetMapping("/patientInfo/search/{firstName}/{lastName}")
     public ResponseEntity<List<Patient>> getPatientList(@PathVariable("firstName") String firstName, @PathVariable("lastName") String lastName) {
         try {
-            List<Patient> patientList = patientService.getPatientListByFistNameAndLastName(firstName, lastName);
+            List<Patient> patientList = patientInfoService.getPatientListByFistNameAndLastName(firstName, lastName);
             return ResponseEntity.ok(patientList);
         } catch (PatientNotFoundException e) {
             return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
@@ -42,7 +42,7 @@ public class PatientController {
     @GetMapping("/patientInfo/search/{id}")
     public ResponseEntity<Optional<Patient>> getPatientById(@PathVariable("id") int id) {
         try {
-            Optional<Patient> patient = patientService.getPatientById(id);
+            Optional<Patient> patient = patientInfoService.getPatientById(id);
             return ResponseEntity.ok(patient);
         } catch (PatientNotFoundException e) {
             return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
@@ -53,7 +53,7 @@ public class PatientController {
     @PutMapping("/patientInfo/update")
     public ResponseEntity<Patient> updatePatient(@RequestBody Patient patient) {
         try {
-            Patient patientToUpdate = patientService.updatePatient(patient);
+            Patient patientToUpdate = patientInfoService.updatePatient(patient);
             return ResponseEntity.ok(patientToUpdate);
         } catch (PatientNotFoundException e) {
             return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
@@ -79,7 +79,7 @@ public class PatientController {
                     .address(address)
                     .phone(phone)
                     .build();
-            Patient patientToCreate = patientService.createPatient(patient);
+            Patient patientToCreate = patientInfoService.createPatient(patient);
             return ResponseEntity.ok(patientToCreate);
         } catch (PatientAlreadyExistException e) {
             return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);

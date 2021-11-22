@@ -3,7 +3,7 @@ package com.mediscreen.patientInfo.service;
 import com.mediscreen.patientInfo.exceptions.PatientAlreadyExistException;
 import com.mediscreen.patientInfo.exceptions.PatientNotFoundException;
 import com.mediscreen.patientInfo.model.Patient;
-import com.mediscreen.patientInfo.repository.PatientRepository;
+import com.mediscreen.patientInfo.repository.PatientInfoRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,11 +14,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class PatientServiceImpl implements PatientService {
-    private static final Logger logger = LoggerFactory.getLogger(PatientService.class);
+public class PatientInfoServiceImpl implements PatientInfoService {
+    private static final Logger logger = LoggerFactory.getLogger(PatientInfoService.class);
 
     @Autowired
-    PatientRepository patientRepository;
+    PatientInfoRepository patientInfoRepository;
 
     /**
      * Find all patients
@@ -27,7 +27,7 @@ public class PatientServiceImpl implements PatientService {
      */
     public Iterable<Patient> getAllPatients() {
         logger.info("Get all patients");
-        return patientRepository.findAllByOrderByLastNameAsc();
+        return patientInfoRepository.findAllByOrderByLastNameAsc();
     }
 
     /**
@@ -40,7 +40,7 @@ public class PatientServiceImpl implements PatientService {
     @Override
     public List<Patient> getPatientListByFistNameAndLastName(String firstName, String lastName) {
         logger.info("Get a patient by firstName : {} " + "and lastName : {} ", firstName, lastName);
-        List<Patient> patientList = patientRepository.findByFirstNameAndLastName(firstName, lastName);
+        List<Patient> patientList = patientInfoRepository.findByFirstNameAndLastName(firstName, lastName);
         if (!patientList.isEmpty()) return patientList;
         logger.error("No patient found with this name : {} {} ", firstName, lastName);
         throw new PatientNotFoundException("No patient found with this name : " + firstName + " " + lastName);
@@ -55,7 +55,7 @@ public class PatientServiceImpl implements PatientService {
     @Override
     public Optional<Patient> getPatientById(int id) {
         logger.info("Get a patient by id : {} ", id);
-        Optional<Patient> patient = patientRepository.findById(id);
+        Optional<Patient> patient = patientInfoRepository.findById(id);
         if (patient.isPresent()) return patient;
         logger.error("No patient found with this id : {} ", id);
         throw new PatientNotFoundException("No patient found with this id : " + id);
@@ -71,7 +71,7 @@ public class PatientServiceImpl implements PatientService {
     @Transactional
     public Patient updatePatient(Patient patient) {
         logger.info("Update a patient id : {} ", patient.getPatId());
-        Optional<Patient> patientToUpdate = patientRepository.findById(patient.getPatId());
+        Optional<Patient> patientToUpdate = patientInfoRepository.findById(patient.getPatId());
         if (patientToUpdate.isPresent()) {
             Patient patientUpdated = Patient.builder()
                     .patId(patient.getPatId())
@@ -82,8 +82,8 @@ public class PatientServiceImpl implements PatientService {
                     .sex(patient.getSex())
                     .phone(patient.getPhone())
                     .build();
-            patientRepository.save(patientUpdated);
-            if (patientRepository.findByFirstNameAndLastNameAndDob(patientUpdated.getFirstName(), patientUpdated.getLastName(), patientUpdated.getDob()).size() > 1 ) {
+            patientInfoRepository.save(patientUpdated);
+            if (patientInfoRepository.findByFirstNameAndLastNameAndDob(patientUpdated.getFirstName(), patientUpdated.getLastName(), patientUpdated.getDob()).size() > 1 ) {
                 logger.error("Patient {} {} already exist with this birthdate : {}", patient.getFirstName(), patient.getLastName(), patient.getDob());
                 throw new PatientAlreadyExistException("Patient " + patient.getFirstName() + ' ' + patient.getLastName() + " already exist with this birthdate : " + patient.getDob());
             }
@@ -102,11 +102,11 @@ public class PatientServiceImpl implements PatientService {
     @Override
     public Patient createPatient(Patient patient) {
         logger.info("Create a new patient : {} {} ", patient.getFirstName(), patient.getLastName());
-        if (patientRepository.findByFirstNameAndLastNameAndDob(patient.getFirstName(), patient.getLastName(), patient.getDob()).size() > 0) {
+        if (patientInfoRepository.findByFirstNameAndLastNameAndDob(patient.getFirstName(), patient.getLastName(), patient.getDob()).size() > 0) {
             logger.error("Patient {} {} already exist with this birthdate : {}", patient.getFirstName(), patient.getLastName(), patient.getDob());
             throw new PatientAlreadyExistException("Patient " + patient.getFirstName() + ' ' + patient.getLastName() + " already exist with this birthdate : " + patient.getDob());
         }
         logger.info("New patient created");
-        return patientRepository.save(patient);
+        return patientInfoRepository.save(patient);
     }
 }

@@ -4,7 +4,7 @@ import com.mediscreen.patientInfo.config.DataSourceTest;
 import com.mediscreen.patientInfo.exceptions.PatientAlreadyExistException;
 import com.mediscreen.patientInfo.exceptions.PatientNotFoundException;
 import com.mediscreen.patientInfo.model.Patient;
-import com.mediscreen.patientInfo.repository.PatientRepository;
+import com.mediscreen.patientInfo.repository.PatientInfoRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,14 +25,14 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class PatientServiceImplTest {
+public class PatientInfoServiceImplTest {
 
     @Mock
-    PatientRepository patientRepository;
+    PatientInfoRepository patientInfoRepository;
     @InjectMocks
     DataSourceTest dataSourceTest;
     @InjectMocks
-    PatientServiceImpl patientService;
+    PatientInfoServiceImpl patientService;
 
     @BeforeEach
     void clear() {
@@ -44,7 +44,7 @@ public class PatientServiceImplTest {
     void getAllPatientsTest() {
 
         //GIVEN
-        when(patientRepository.findAllByOrderByLastNameAsc()).thenReturn(dataSourceTest.getAllPatientsMocked());
+        when(patientInfoRepository.findAllByOrderByLastNameAsc()).thenReturn(dataSourceTest.getAllPatientsMocked());
 
         //WHEN
         Iterable<Patient> patientIterable = patientService.getAllPatients();
@@ -58,13 +58,13 @@ public class PatientServiceImplTest {
     void getPatientListByFistNameAndLastNameTest() {
 
         //GIVEN
-        Mockito.when(patientRepository.findByFirstNameAndLastName("firstname1", "lastname1")).thenReturn(dataSourceTest.getAllPatientsMocked());
+        Mockito.when(patientInfoRepository.findByFirstNameAndLastName("firstname1", "lastname1")).thenReturn(dataSourceTest.getAllPatientsMocked());
 
         //WHEN
         patientService.getPatientListByFistNameAndLastName("firstname1", "lastname1");
 
         //THEN
-        Mockito.verify(patientRepository, Mockito.times(1)).findByFirstNameAndLastName("firstname1", "lastname1");
+        Mockito.verify(patientInfoRepository, Mockito.times(1)).findByFirstNameAndLastName("firstname1", "lastname1");
     }
 
     @Test
@@ -72,7 +72,7 @@ public class PatientServiceImplTest {
     void getPatientListByUnknownFistNameAndLastNameTest() {
 
         //GIVEN
-        Mockito.when(patientRepository.findByFirstNameAndLastName("firstname2", "lastname2")).thenReturn(new ArrayList<>());
+        Mockito.when(patientInfoRepository.findByFirstNameAndLastName("firstname2", "lastname2")).thenReturn(new ArrayList<>());
 
         //THEN
         assertThrows(PatientNotFoundException.class, () -> patientService.getPatientListByFistNameAndLastName("firstname2", "lastname2"));
@@ -83,13 +83,13 @@ public class PatientServiceImplTest {
     void getPatientByIdTest() {
 
         //GIVEN
-        Mockito.when(patientRepository.findById(0)).thenReturn(java.util.Optional.ofNullable(dataSourceTest.getAllPatientsMocked().get(0)));
+        Mockito.when(patientInfoRepository.findById(0)).thenReturn(java.util.Optional.ofNullable(dataSourceTest.getAllPatientsMocked().get(0)));
 
         //WHEN
         patientService.getPatientById(0);
 
         //THEN
-        Mockito.verify(patientRepository, Mockito.times(1)).findById(0);
+        Mockito.verify(patientInfoRepository, Mockito.times(1)).findById(0);
     }
 
     @Test
@@ -97,7 +97,7 @@ public class PatientServiceImplTest {
     void getPatientByUnknownIdTest() {
 
         //GIVEN
-        Mockito.when(patientRepository.findById(2)).thenReturn(Optional.empty());
+        Mockito.when(patientInfoRepository.findById(2)).thenReturn(Optional.empty());
 
         //THEN
         assertThrows(PatientNotFoundException.class, () -> patientService.getPatientById(2));
@@ -112,11 +112,11 @@ public class PatientServiceImplTest {
         Patient newPatient = Patient.builder().patId(1).lastName("lastnameUpdated").build();
 
         //WHEN
-        Mockito.when(patientRepository.findById(patient.getPatId())).thenReturn(Optional.of(patient));
+        Mockito.when(patientInfoRepository.findById(patient.getPatId())).thenReturn(Optional.of(patient));
 
         //THEN
         assertEquals("lastnameUpdated", patientService.updatePatient(newPatient).getLastName());
-        verify(patientRepository, Mockito.times(1)).save(any());
+        verify(patientInfoRepository, Mockito.times(1)).save(any());
     }
 
     @Test
@@ -127,7 +127,7 @@ public class PatientServiceImplTest {
         Patient patient = Patient.builder().patId(1).build();
 
         //WHEN
-        Mockito.when(patientRepository.findById(1)).thenReturn(Optional.empty());
+        Mockito.when(patientInfoRepository.findById(1)).thenReturn(Optional.empty());
 
         //THEN
         assertThrows(PatientNotFoundException.class, () -> patientService.updatePatient(patient));
@@ -141,8 +141,8 @@ public class PatientServiceImplTest {
         Patient patient = Patient.builder().patId(1).firstName("firstname2").lastName("lastname2").dob("1950-01-01").build();
 
         //WHEN
-        Mockito.when(patientRepository.findById(1)).thenReturn(Optional.of(patient));
-        Mockito.when(patientRepository.findByFirstNameAndLastNameAndDob(patient.getFirstName(), patient.getLastName(), patient.getDob())).thenReturn(dataSourceTest.getAllPatientsMocked());
+        Mockito.when(patientInfoRepository.findById(1)).thenReturn(Optional.of(patient));
+        Mockito.when(patientInfoRepository.findByFirstNameAndLastNameAndDob(patient.getFirstName(), patient.getLastName(), patient.getDob())).thenReturn(dataSourceTest.getAllPatientsMocked());
 
         //THEN
         assertThrows(PatientAlreadyExistException.class, () -> patientService.updatePatient(patient));
@@ -159,13 +159,13 @@ public class PatientServiceImplTest {
                 .dob("1950-02-10")
                 .sex(F)
                 .build();
-        when(patientRepository.findByFirstNameAndLastNameAndDob(newPatient.getFirstName(),newPatient.getLastName(),newPatient.getDob())).thenReturn(dataSourceTest.getPatientMocked());
+        when(patientInfoRepository.findByFirstNameAndLastNameAndDob(newPatient.getFirstName(),newPatient.getLastName(),newPatient.getDob())).thenReturn(dataSourceTest.getPatientMocked());
 
         // WHEN
         patientService.createPatient(newPatient);
 
         // THEN
-        verify(patientRepository, Mockito.times(1)).save(newPatient);
+        verify(patientInfoRepository, Mockito.times(1)).save(newPatient);
     }
 
     @Test
@@ -179,7 +179,7 @@ public class PatientServiceImplTest {
                 .dob("1950-02-10")
                 .sex(F)
                 .build();
-        when(patientRepository.findByFirstNameAndLastNameAndDob(newPatient.getFirstName(),newPatient.getLastName(),newPatient.getDob())).thenReturn(dataSourceTest.getAllPatientsMocked());
+        when(patientInfoRepository.findByFirstNameAndLastNameAndDob(newPatient.getFirstName(),newPatient.getLastName(),newPatient.getDob())).thenReturn(dataSourceTest.getAllPatientsMocked());
 
 
         // THEN

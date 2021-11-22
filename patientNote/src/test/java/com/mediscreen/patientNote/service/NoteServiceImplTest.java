@@ -85,13 +85,35 @@ class NoteServiceImplTest {
     void createNewAppointmentTest() {
 
         //GIVEN
-        Appointment appointment = Appointment.builder().appointmentId("1").patId(1).note("test").build();
+        Appointment appointment = Appointment.builder().appointmentId("1").patId(1).note("test").doctorName("name").build();
 
         //WHEN
         noteService.createAppointment(appointment);
 
         //THEN
         Mockito.verify(noteRepository, Mockito.times(1)).save(appointment);
+    }
+
+    @Test
+    @DisplayName(("Try to create a new appointment without patient id"))
+    void createNewAppointmentWithoutPatIdTest() {
+
+        //WHEN
+        Appointment appointment = Appointment.builder().appointmentId("1").note("test").doctorName("name").build();
+
+        //THEN
+        assertThrows(AppointmentNotFoundException.class, () -> noteService.createAppointment(appointment));
+    }
+
+    @Test
+    @DisplayName(("Try to create a new appointment without doctor name"))
+    void createNewAppointmentWithoutDoctorNameTest() {
+
+        //WHEN
+        Appointment appointment = Appointment.builder().appointmentId("1").note("test").patId(1).build();
+
+        //THEN
+        assertThrows(AppointmentNotFoundException.class, () -> noteService.createAppointment(appointment));
     }
 
     @Test

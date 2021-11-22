@@ -89,6 +89,7 @@ public class NoteControllerTest {
         //GIVEN
         Appointment appointment = Appointment.builder()
                 .patId(1)
+                .doctorName("name")
                 .note("test")
                 .build();
 

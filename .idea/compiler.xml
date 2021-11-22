@@ -6,15 +6,17 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="patientReport" />
+        <module name="clientui" />
         <module name="patientInfo" />
         <module name="patientNote" />
-        <module name="clientui" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="clientui" target="11" />
       <module name="patientInfo" target="11" />
       <module name="patientNote" target="11" />
+      <module name="patientReport" target="1.5" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
