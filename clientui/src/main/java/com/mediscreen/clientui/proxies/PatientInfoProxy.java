@@ -6,9 +6,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static com.mediscreen.clientui.constants.UrlProxies.PATIENT_INFO_PROXY_URL;
-
-@FeignClient(name = "mediscreen-patient-info", url = PATIENT_INFO_PROXY_URL)
+@FeignClient(name = "mediscreen-patient-info", url="${patient.info.proxy.url}")
 public interface PatientInfoProxy {
 
     /**

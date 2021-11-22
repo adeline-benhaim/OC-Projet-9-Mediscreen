@@ -33,7 +33,6 @@ services:
       - "8080:8080"
     restart: always
     environment:
-
       PATIENT_INFO_PROXY_URL: http://patientinfo:8081
       PATIENT_NOTE_PROXY_URL: http://patientnote:8082
 
