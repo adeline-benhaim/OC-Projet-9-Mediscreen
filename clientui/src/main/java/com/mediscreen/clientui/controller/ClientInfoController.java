@@ -103,7 +103,7 @@ public class ClientInfoController {
                 clientInfoService.updatePatient(patientBean);
                 return "redirect:/searchById/" + patientBean.getPatId();
             } catch (FeignException e) {
-                ObjectError objectError = new ObjectError("error", ("Patient " + patientBean.getFirstName() + ' ' + patientBean.getLastName() + " already exist with this birthdate : " + patientBean.getDob()));
+                ObjectError objectError = new ObjectError("error", e.contentUTF8());
                 result.addError(objectError);
                 model.addAttribute("patientBean", patientBean);
                 return "FormUpdatePatient";
@@ -126,7 +126,7 @@ public class ClientInfoController {
                 PatientBean patientBean1 = clientInfoService.postPatient(patientBean.getFirstName(), patientBean.getLastName(), patientBean.getDob(), patientBean.getSex(), patientBean.getAddress(), patientBean.getPhone());
                 return "redirect:/searchById/" + patientBean1.getPatId();
             } catch (FeignException e) {
-                ObjectError objectError = new ObjectError("error", ("Patient " + patientBean.getFirstName() + ' ' + patientBean.getLastName() + " already exist with this birthdate : " + patientBean.getDob()));
+                ObjectError objectError = new ObjectError("error", e.contentUTF8());
                 result.addError(objectError);
                 model.addAttribute("patientBean", patientBean);
                 return "FormNewPatient";

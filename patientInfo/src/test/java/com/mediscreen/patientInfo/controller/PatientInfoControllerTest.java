@@ -1,5 +1,6 @@
 package com.mediscreen.patientInfo.controller;
 
+import com.mediscreen.patientInfo.exceptions.PatientAlreadyExistException;
 import com.mediscreen.patientInfo.exceptions.PatientNotFoundException;
 import com.mediscreen.patientInfo.model.Patient;
 import com.mediscreen.patientInfo.service.PatientInfoServiceImpl;
@@ -18,6 +19,7 @@ import java.util.List;
 
 import static com.mediscreen.patientInfo.config.DataSourceTest.asJsonString;
 import static com.mediscreen.patientInfo.model.Patient.Sex.F;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -117,6 +119,48 @@ public class PatientInfoControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("PUT request (/patientInfo/update) with an unknown patient id must return an HTTP 400 response")
+    public void putNoExistingPatient() throws Exception {
+
+        //GIVEN
+        Patient patient = Patient.builder()
+                .firstName("firstname1")
+                .lastName("lastname1")
+                .build();
+
+        doThrow(PatientNotFoundException.class).when(patientService).updatePatient(patient);
+
+        //THEN
+        mockMvc.perform(MockMvcRequestBuilders
+                .put("/patientInfo/update")
+                .content(String.valueOf(patient))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("PUT request (/patientInfo/update) with already existing patient id must return an HTTP 400 response")
+    public void putAlreadyExistingPatient() throws Exception {
+
+        //GIVEN
+        Patient patient = Patient.builder()
+                .firstName("firstname1")
+                .lastName("lastname1")
+                .build();
+
+        doThrow(PatientAlreadyExistException.class).when(patientService).updatePatient(patient);
+
+        //THEN
+        mockMvc.perform(MockMvcRequestBuilders
+                .put("/patientInfo/update")
+                .content(String.valueOf(patient))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
