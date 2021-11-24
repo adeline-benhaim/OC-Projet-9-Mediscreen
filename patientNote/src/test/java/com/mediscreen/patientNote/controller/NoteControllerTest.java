@@ -1,6 +1,5 @@
 package com.mediscreen.patientNote.controller;
 
-import com.fasterxml.jackson.annotation.OptBoolean;
 import com.mediscreen.patientNote.exceptions.AppointmentNotFoundException;
 import com.mediscreen.patientNote.model.Appointment;
 import com.mediscreen.patientNote.service.NoteServiceImpl;
@@ -16,12 +15,12 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static com.mediscreen.patientNote.config.DataSourceTest.asJsonString;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -100,6 +99,55 @@ public class NoteControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("POST request (/appointment/add) with no patient id must return an HTTP 400 response")
+    public void postAppointmentNoteWithNoPatIdTest() throws Exception {
+
+        //GIVEN
+        Appointment appointment = Appointment.builder()
+                .patId(0)
+                .date(LocalDateTime.now())
+                .appointmentId("fdg")
+                .doctorName("name")
+                .note("test")
+                .build();
+
+        //WHEN
+        doThrow(AppointmentNotFoundException.class).when(noteService).createAppointment(appointment);
+
+        //THEN
+        mockMvc.perform(MockMvcRequestBuilders
+                .post("/appointment/add")
+                .content(String.valueOf(appointment))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("POST request (/appointment/add) with no doctor name must return an HTTP 400 response")
+    public void postAppointmentNoteWithNoDoctorNameTest() throws Exception {
+
+        //GIVEN
+        Appointment appointment = Appointment.builder()
+                .patId(1)
+                .date(LocalDateTime.now())
+                .appointmentId("fdg")
+                .note("test")
+                .build();
+
+        //WHEN
+        doThrow(AppointmentNotFoundException.class).when(noteService).createAppointment(appointment);
+
+        //THEN
+        mockMvc.perform(MockMvcRequestBuilders
+                .post("/appointment/add")
+                .content(String.valueOf(appointment))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
     }
 
     @Test

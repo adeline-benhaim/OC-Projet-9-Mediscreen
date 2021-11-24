@@ -8,9 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static com.mediscreen.clientui.constants.UrlProxies.PATIENT_NOTE_PROXY_URL;
-
-@FeignClient(name = "mediscreen-patient-note", url = PATIENT_NOTE_PROXY_URL)
+@FeignClient(name = "mediscreen-patient-note", url = "${patient.note.proxy.url}")
 public interface PatientNoteProxy {
 
     @GetMapping("/patientNote/{patId}")

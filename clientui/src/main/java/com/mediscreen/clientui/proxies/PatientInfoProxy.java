@@ -6,9 +6,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static com.mediscreen.clientui.constants.UrlProxies.PATIENT_INFO_PROXY_URL;
-
-@FeignClient(name = "mediscreen-patient-info", url = PATIENT_INFO_PROXY_URL)
+@FeignClient(name = "mediscreen-patient-info", url = "${patient.info.proxy.url}")
 public interface PatientInfoProxy {
 
     /**
@@ -36,7 +34,7 @@ public interface PatientInfoProxy {
      * @return patient found
      */
     @GetMapping("/patientInfo/search/{id}")
-    PatientBean getPatientById (@PathVariable("id") int id);
+    PatientBean getPatientById(@PathVariable("id") int id);
 
     /**
      * Update a patient
@@ -45,24 +43,24 @@ public interface PatientInfoProxy {
      * @return patient updated
      */
     @PutMapping("/patientInfo/update")
-    PatientBean updatePatient(@RequestBody PatientBean patientBean );
+    PatientBean updatePatient(@RequestBody PatientBean patientBean);
 
     /**
      * Create a new patient
      *
      * @param firstName of patient to create
-     * @param lastName of patient to create
+     * @param lastName  of patient to create
      * @param birthdate of patient to create
-     * @param sex of patient to create
-     * @param address of patient to create not required
-     * @param phone of patient to create not required
+     * @param sex       of patient to create
+     * @param address   of patient to create not required
+     * @param phone     of patient to create not required
      * @return new patient created
      */
     @PostMapping("/patient/add")
-    PatientBean postPatient(@RequestParam("firstName")String firstName,
-                            @RequestParam("lastName")String lastName,
-                            @RequestParam("dob")String birthdate,
-                            @RequestParam("sex")PatientBean.Sex sex,
-                            @RequestParam(value = "address", required = false)String address,
-                            @RequestParam(value = "phone", required = false)String phone);
+    PatientBean postPatient(@RequestParam("firstName") String firstName,
+                            @RequestParam("lastName") String lastName,
+                            @RequestParam("dob") String birthdate,
+                            @RequestParam("sex") PatientBean.Sex sex,
+                            @RequestParam(value = "address", required = false) String address,
+                            @RequestParam(value = "phone", required = false) String phone);
 }

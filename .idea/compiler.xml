@@ -16,7 +16,7 @@
       <module name="clientui" target="11" />
       <module name="patientInfo" target="11" />
       <module name="patientNote" target="11" />
-      <module name="patientReport" target="1.5" />
+      <module name="patientReport" target="11" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
@@ -24,6 +24,7 @@
       <module name="clientui" options="-parameters" />
       <module name="patientInfo" options="-parameters" />
       <module name="patientNote" options="-parameters" />
+      <module name="patientReport" options="-parameters" />
     </option>
   </component>
 </project>
