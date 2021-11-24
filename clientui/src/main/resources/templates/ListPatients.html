@@ -80,9 +80,9 @@
             </tr>
             </thead>
             <tbody>
-<!--            <tr th:if="${allPatientsBeanList.empty}">-->
-<!--                <td colspan="4">No result</td>-->
-<!--            </tr>-->
+            <tr th:if="${allPatientsBeanList.empty}">
+                <td colspan="4">No result</td>
+            </tr>
             <tr th:each="patient: ${allPatientsBeanList}">
                 <td><span th:text="${patient.firstName}"> FirstName </span></td>
                 <td><span th:text="${patient.lastName}"> LastName </span></td>
@@ -92,8 +92,10 @@
                         <button class="btn btn-info btn-sm"><i class="glyphicon glyphicon-user"></i> View</button>
                     </a>
                     <a th:href="@{/updatePatient/{id}(id=${patient.patId})}">
-                        <button class="btn btn-warning btn-sm"><i class="glyphicon glyphicon-edit"></i> Update
-                        </button>
+                        <button class="btn btn-warning btn-sm"><i class="glyphicon glyphicon-edit"></i> Update</button>
+                    </a>
+                    <a th:href="@{/assess/{id}(id=${patient.patId})}">
+                        <button class="btn btn-danger btn-sm"><i class="glyphicon glyphicon-info-sign"></i> Report</button>
                     </a>
                 </td>
             </tr>

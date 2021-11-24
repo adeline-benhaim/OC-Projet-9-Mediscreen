@@ -96,6 +96,9 @@
                     <a th:href="@{/updatePatient/{id}(id=${patient.patId})}">
                     <button class="btn btn-warning btn-sm"><i class="glyphicon glyphicon-edit"></i> Update</button>
                     </a>
+                    <a th:href="@{/assess/{id}(id=${patient.patId})}">
+                        <button class="btn btn-danger btn-sm"><i class="glyphicon glyphicon-info-sign"></i> Report</button>
+                    </a>
                 </td>
             </tr>
             </tbody>
