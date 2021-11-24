@@ -4,6 +4,8 @@ import com.mediscreen.patientReport.beans.AppointmentBean;
 import com.mediscreen.patientReport.beans.PatientBean;
 import com.mediscreen.patientReport.proxies.PatientInfoProxy;
 import com.mediscreen.patientReport.proxies.PatientNoteProxy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.util.Pair;
@@ -23,6 +25,7 @@ import static com.mediscreen.patientReport.constants.RiskLevel.*;
 
 @Service
 public class PatientReportServiceImpl implements PatientReportService {
+    private static final Logger logger = LoggerFactory.getLogger(PatientReportService.class);
 
     @Autowired
     PatientInfoProxy patientInfoProxy;
@@ -36,9 +39,11 @@ public class PatientReportServiceImpl implements PatientReportService {
      * @return age of patient found by id
      */
     public int calculateAge(int patId) {
+        logger.info("Try to calculate age for patient id : {} ", patId);
         String birthdate = patientInfoProxy.getPatientById(patId).getDob();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate bod = LocalDate.parse(birthdate, formatter);
+        logger.info("Calculate age for patient id : {} ", patId);
         return Period.between(bod, LocalDate.now()).getYears();
     }
 
@@ -49,7 +54,7 @@ public class PatientReportServiceImpl implements PatientReportService {
      * @return the number of occurrences found
      */
     public int diabetesTriggersCount(Pair<List<AppointmentBean>, Long> patientNoteProxies) {
-
+        logger.info("Count diabetes triggers");
         int count = 0;
         for (AppointmentBean note : patientNoteProxies.getFirst()) {
             Matcher matcher = TRIGGERS.matcher(note.getNote());
@@ -70,6 +75,7 @@ public class PatientReportServiceImpl implements PatientReportService {
      */
     @Override
     public String calculateRiskLevel(int patId) {
+        logger.info("Calculate risk level for patient id : {} ", patId);
         PatientBean patientBean = patientInfoProxy.getPatientById(patId);
         Pair<List<AppointmentBean>, Long> appointmentBeanList = patientNoteProxy.findByPatId(patId, Pageable.unpaged());
         int nbDiabetesTriggers = diabetesTriggersCount(appointmentBeanList);
@@ -77,13 +83,16 @@ public class PatientReportServiceImpl implements PatientReportService {
         int age = calculateAge(patId);
         String diabetesAssessment = null;
         if (age < 30) {
+            logger.info("Calculate risk level for patient < 30 ");
             if (sex == M) {
+                logger.info("Calculate risk level for man");
                 if (nbDiabetesTriggers >= 3 & nbDiabetesTriggers < 5) {
                     diabetesAssessment = IN_DANGER;
                 } else if (nbDiabetesTriggers >= 5) {
                     diabetesAssessment = EARLY_ONSET;
                 }
             } else if (sex == F) {
+                logger.info("Calculate risk level for woman");
                 if (nbDiabetesTriggers >= 4 & nbDiabetesTriggers < 7) {
                     diabetesAssessment = IN_DANGER;
                 } else if (nbDiabetesTriggers >= 7) {
@@ -91,6 +100,7 @@ public class PatientReportServiceImpl implements PatientReportService {
                 }
             }
         } else {
+            logger.info("Calculate risk level for patient > 30 ");
             if (nbDiabetesTriggers >= 2 & nbDiabetesTriggers < 6) {
                 diabetesAssessment = BORDERLINE;
             } else if (nbDiabetesTriggers >= 6 & nbDiabetesTriggers < 8) {
@@ -113,6 +123,7 @@ public class PatientReportServiceImpl implements PatientReportService {
      */
     @Override
     public List<String> calculateRiskLevelFamily(String lastName) {
+        logger.info("Calculate risk level for family name : " + lastName);
         Iterable<PatientBean> patientIt = patientInfoProxy.getAllPatient();
         List<PatientBean> patientList = new ArrayList<>();
         for (PatientBean patient : patientIt) {

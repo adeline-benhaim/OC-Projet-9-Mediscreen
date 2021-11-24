@@ -27,6 +27,7 @@ services:
     depends_on:
       - patientinfo
       - patientnote
+      - patientreport
     image: client_ui:1.0
     build:
       context: clientui
@@ -36,6 +37,7 @@ services:
     environment:
       PATIENT_INFO_PROXY_URL: http://patientinfo:8081
       PATIENT_NOTE_PROXY_URL: http://patientnote:8082
+      PATIENT_REPORT_PROXY_URL: http://patientreport:8083
 
   patientinfo:
     image: patient_info:1.0
@@ -64,6 +66,20 @@ services:
     ports:
       - "8082:8082"
     restart: always
+
+  patientreport:
+    depends_on:
+      - patientinfo
+      - patientnote
+    image: patient_report:1.0
+    build:
+      context: patientReport
+    ports:
+      - "8083:8083"
+    restart: always
+    environment:
+      PATIENT_INFO_PROXY_URL: http://patientinfo:8081
+      PATIENT_NOTE_PROXY_URL: http://patientnote:8082
 
 volumes:
   mysql_db_data: {}
