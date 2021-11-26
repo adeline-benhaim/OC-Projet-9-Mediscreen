@@ -28,6 +28,7 @@ public class Patient {
     @Column(name = "last_name")
     private String lastName;
 
+    @NotNull
     @Enumerated(EnumType.STRING)
     public Sex sex;
 
@@ -36,6 +37,7 @@ public class Patient {
         M
     }
 
+    @NotNull
     private String dob;
 
     private String address;

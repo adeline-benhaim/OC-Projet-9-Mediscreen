@@ -1,7 +1,3 @@
-CREATE SCHEMA IF NOT EXISTS mediscreen;
-
-USE mediscreen;
-
 CREATE TABLE IF NOT EXISTS patient (
                 patient_id INT AUTO_INCREMENT NOT NULL,
                 first_name VARCHAR(100) NOT NULL,

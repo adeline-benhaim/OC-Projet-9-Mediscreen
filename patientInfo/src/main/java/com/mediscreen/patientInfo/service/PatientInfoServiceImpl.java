@@ -7,6 +7,7 @@ import com.mediscreen.patientInfo.repository.PatientInfoRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -73,22 +74,26 @@ public class PatientInfoServiceImpl implements PatientInfoService {
         logger.info("Update a patient id : {} ", patient.getPatId());
         Optional<Patient> patientToUpdate = patientInfoRepository.findById(patient.getPatId());
         if (patientToUpdate.isPresent()) {
-            Patient patientUpdated = Patient.builder()
-                    .patId(patient.getPatId())
-                    .firstName(patient.getFirstName())
-                    .lastName(patient.getLastName())
-                    .address(patient.getAddress())
-                    .dob(patient.getDob())
-                    .sex(patient.getSex())
-                    .phone(patient.getPhone())
-                    .build();
-            patientInfoRepository.save(patientUpdated);
-            if (patientInfoRepository.findByFirstNameAndLastNameAndDob(patientUpdated.getFirstName(), patientUpdated.getLastName(), patientUpdated.getDob()).size() > 1 ) {
-                logger.error("Patient {} {} already exist with this birthdate : {}", patient.getFirstName(), patient.getLastName(), patient.getDob());
-                throw new PatientAlreadyExistException("Patient " + patient.getFirstName() + ' ' + patient.getLastName() + " already exist with this birthdate : " + patient.getDob());
+            try {
+                Patient patientUpdated = Patient.builder()
+                        .patId(patient.getPatId())
+                        .firstName(patient.getFirstName())
+                        .lastName(patient.getLastName())
+                        .address(patient.getAddress())
+                        .dob(patient.getDob())
+                        .sex(patient.getSex())
+                        .phone(patient.getPhone())
+                        .build();
+                patientInfoRepository.save(patientUpdated);
+                if (patientInfoRepository.findByFirstNameAndLastNameAndDob(patientUpdated.getFirstName(), patientUpdated.getLastName(), patientUpdated.getDob()).size() > 1) {
+                    logger.error("Patient {} {} already exist with this birthdate : {}", patient.getFirstName(), patient.getLastName(), patient.getDob());
+                    throw new PatientAlreadyExistException("Patient " + patient.getFirstName() + ' ' + patient.getLastName() + " already exist with this birthdate : " + patient.getDob());
+                }
+                logger.info("Patient id : {} ", patientUpdated.getPatId() + " updated");
+                return patientUpdated;
+            } catch (DataIntegrityViolationException e) {
+                throw new PatientNotFoundException("Mandatory parameters are missing for updating the patient");
             }
-            logger.info("Patient id : {} ", patientUpdated.getPatId() + " updated");
-            return patientUpdated;
         }
         throw new PatientNotFoundException("No patient found with this id : " + patient.getPatId());
     }

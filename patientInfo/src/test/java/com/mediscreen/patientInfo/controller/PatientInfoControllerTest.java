@@ -10,6 +10,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -185,27 +186,5 @@ public class PatientInfoControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
-    }
-
-    @Test
-    @DisplayName("POST request (/patient/add) with a new patient but without all the expected parameters must return an HTTP 400 response")
-    public void postANewPatientWithoutExpectedParametersTest() throws Exception {
-
-        //GIVEN
-        Patient patient = Patient.builder()
-                .firstName("firstname")
-                .lastName("lastname")
-                .sex(F)
-                .build();
-
-        //THEN
-        mockMvc.perform(MockMvcRequestBuilders
-                .post("/patient/add")
-                .param("firstName", patient.getFirstName())
-                .param("lastName", patient.getLastName())
-                .param("sex", String.valueOf(patient.sex))
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
     }
 }
