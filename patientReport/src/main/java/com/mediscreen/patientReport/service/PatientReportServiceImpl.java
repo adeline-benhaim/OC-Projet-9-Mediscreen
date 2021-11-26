@@ -2,6 +2,7 @@ package com.mediscreen.patientReport.service;
 
 import com.mediscreen.patientReport.beans.AppointmentBean;
 import com.mediscreen.patientReport.beans.PatientBean;
+import com.mediscreen.patientReport.model.DiabetesTriggers;
 import com.mediscreen.patientReport.proxies.PatientInfoProxy;
 import com.mediscreen.patientReport.proxies.PatientNoteProxy;
 import org.slf4j.Logger;
@@ -14,13 +15,10 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
+import java.util.*;
 
 import static com.mediscreen.patientReport.beans.PatientBean.Sex.F;
 import static com.mediscreen.patientReport.beans.PatientBean.Sex.M;
-import static com.mediscreen.patientReport.constants.DiabetesTriggers.TRIGGERS;
 import static com.mediscreen.patientReport.constants.RiskLevel.*;
 
 @Service
@@ -48,23 +46,24 @@ public class PatientReportServiceImpl implements PatientReportService {
     }
 
     /**
-     * Counts the number of occurrences of trigger terms found in a list of notes
+     * Counts the number of occurrences without duplicate of trigger terms found in a list of notes
      *
      * @param patientNoteProxies list of appointments which contain the list of notes
-     * @return the number of occurrences found
+     * @return the number of occurrences without duplicate found
      */
     public int diabetesTriggersCount(Pair<List<AppointmentBean>, Long> patientNoteProxies) {
         logger.info("Count diabetes triggers");
-        int count = 0;
+        List<String> countWithDuplicate = new ArrayList();
         for (AppointmentBean note : patientNoteProxies.getFirst()) {
-            Matcher matcher = TRIGGERS.matcher(note.getNote());
-            int result = 0;
-            while (matcher.find()) {
-                result++;
+            for (String trigger : DiabetesTriggers.TriggersList) {
+                if (note.getNote().toLowerCase(Locale.ROOT).contains(trigger.toLowerCase(Locale.ROOT))) {
+                    countWithDuplicate.add(trigger);
+                }
             }
-            count = count + result;
         }
-        return count;
+        Set<String> mySet = new HashSet<String>(countWithDuplicate);
+        List<String> countWithoutDuplicate = new ArrayList<String>(mySet);
+        return countWithoutDuplicate.size();
     }
 
     /**

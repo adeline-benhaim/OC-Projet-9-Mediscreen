@@ -132,7 +132,7 @@ public class PatientReportServiceImplTest {
 
         //GIVEN
         PatientBean patientBean = PatientBean.builder().patId(1).sex(F).dob("2000-05-01").build();
-        AppointmentBean appointmentBean = AppointmentBean.builder().patId(1).appointmentId("1").note("Cholestérol, Taille, fumeur, anormal, anormal, ANORMAL, Anormal").build();
+        AppointmentBean appointmentBean = AppointmentBean.builder().patId(1).appointmentId("1").note("Cholestérol, Taille, fumeur, anormal, Microalbumine, Rechute, Réaction").build();
         List<AppointmentBean> appointmentBeanList = new ArrayList<>();
         appointmentBeanList.add(appointmentBean);
         when(patientInfoProxy.getPatientById(1)).thenReturn(patientBean);
@@ -172,7 +172,7 @@ public class PatientReportServiceImplTest {
 
         //GIVEN
         PatientBean patientBean = PatientBean.builder().patId(1).sex(F).dob("1950-05-01").build();
-        AppointmentBean appointmentBean = AppointmentBean.builder().patId(1).appointmentId("1").note("FUMEUR, ANORMAL, fumeur, anormal").build();
+        AppointmentBean appointmentBean = AppointmentBean.builder().patId(1).appointmentId("1").note("FUMEUR, ANORMAL, fumeur, rechute").build();
         List<AppointmentBean> appointmentBeanList = new ArrayList<>();
         appointmentBeanList.add(appointmentBean);
         when(patientInfoProxy.getPatientById(1)).thenReturn(patientBean);
@@ -192,7 +192,7 @@ public class PatientReportServiceImplTest {
 
         //GIVEN
         PatientBean patientBean = PatientBean.builder().patId(1).sex(M).dob("1950-05-01").build();
-        AppointmentBean appointmentBean = AppointmentBean.builder().patId(1).appointmentId("1").note("Hémoglobine A1C, Microalbumine, Taille, Poidsfumeur, anormal").build();
+        AppointmentBean appointmentBean = AppointmentBean.builder().patId(1).appointmentId("1").note("Hémoglobine A1C, Microalbumine, Taille, Poids, fumeur, anormal").build();
         List<AppointmentBean> appointmentBeanList = new ArrayList<>();
         appointmentBeanList.add(appointmentBean);
         when(patientInfoProxy.getPatientById(1)).thenReturn(patientBean);
@@ -212,7 +212,7 @@ public class PatientReportServiceImplTest {
 
         //GIVEN
         PatientBean patientBean = PatientBean.builder().patId(1).sex(F).dob("1950-05-01").build();
-        AppointmentBean appointmentBean = AppointmentBean.builder().patId(1).appointmentId("1").note("FUMEUR, Hémoglobine A1C, Microalbumine, Taille, Poidsfumeur, anormal").build();
+        AppointmentBean appointmentBean = AppointmentBean.builder().patId(1).appointmentId("1").note("Cholestérol, Taille, fumeur, anormal, Microalbumine, Rechute, Réaction").build();
         List<AppointmentBean> appointmentBeanList = new ArrayList<>();
         appointmentBeanList.add(appointmentBean);
         when(patientInfoProxy.getPatientById(1)).thenReturn(patientBean);
@@ -232,7 +232,7 @@ public class PatientReportServiceImplTest {
 
         //GIVEN
         PatientBean patientBean = PatientBean.builder().patId(1).sex(M).dob("1950-05-01").build();
-        AppointmentBean appointmentBean = AppointmentBean.builder().patId(1).appointmentId("1").note("Hémoglobine A1C, Microalbumine, Taille, Poidsfumeur, anormal, anormal, fumeur").build();
+        AppointmentBean appointmentBean = AppointmentBean.builder().patId(1).appointmentId("1").note("Cholestérol, Taille, fumeur, anormal, Microalbumine, Rechute, Réaction, Anticorps").build();
         List<AppointmentBean> appointmentBeanList = new ArrayList<>();
         appointmentBeanList.add(appointmentBean);
         when(patientInfoProxy.getPatientById(1)).thenReturn(patientBean);
@@ -252,7 +252,7 @@ public class PatientReportServiceImplTest {
 
         //GIVEN
         PatientBean patientBean = PatientBean.builder().patId(1).sex(F).dob("1950-05-01").build();
-        AppointmentBean appointmentBean = AppointmentBean.builder().patId(1).appointmentId("1").note("FUMEUR, Hémoglobine A1C, Microalbumine, Taille, Poidsfumeur, anormal, FUMEUR, Hémoglobine A1C, Microalbumine").build();
+        AppointmentBean appointmentBean = AppointmentBean.builder().patId(1).appointmentId("1").note("Cholestérol, Taille, fumeur, anormal, Microalbumine, Rechute, Réaction, Anticorps").build();
         List<AppointmentBean> appointmentBeanList = new ArrayList<>();
         appointmentBeanList.add(appointmentBean);
         when(patientInfoProxy.getPatientById(1)).thenReturn(patientBean);
@@ -298,7 +298,7 @@ public class PatientReportServiceImplTest {
         patientBeans.add(patientBean);
         patientBeans.add(patientBean1);
         patientBeans.add(patientBean2);
-        AppointmentBean appointmentBean = AppointmentBean.builder().patId(1).appointmentId("1").note("fumeur taille taille").build();
+        AppointmentBean appointmentBean = AppointmentBean.builder().patId(1).appointmentId("1").note("fumeur taille poids").build();
         AppointmentBean appointmentBean1 = AppointmentBean.builder().patId(2).appointmentId("2").note("fumeur taille").build();
         AppointmentBean appointmentBean2 = AppointmentBean.builder().patId(3).appointmentId("3").note("fumeur taille").build();
         List<AppointmentBean> appointmentBeanList = new ArrayList<>();
