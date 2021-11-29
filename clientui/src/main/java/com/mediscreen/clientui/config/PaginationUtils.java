@@ -1,11 +1,12 @@
-package com.mediscreen.clientui.controller;
+package com.mediscreen.clientui.config;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.ui.Model;
 
+@Generated
 public class PaginationUtils {
 
-    static void paginationBuilder(Model model, Pageable pageable, long totalElements, String baseUri) {
+    public static void paginationBuilder(Model model, Pageable pageable, long totalElements, String baseUri) {
         int actualPageNumber = pageable.getPageNumber();
         model.addAttribute("intActualPage", actualPageNumber);
         String actualPageUrl = baseUri + actualPageNumber;

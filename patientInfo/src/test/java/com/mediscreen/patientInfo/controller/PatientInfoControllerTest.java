@@ -79,12 +79,10 @@ public class PatientInfoControllerTest {
     void getPatientByIdTest() throws Exception {
 
         //GIVEN
-        List<Patient>patientList = new ArrayList<>();
         Patient patient = Patient.builder().firstName("firstname1").lastName("lastname1").build();
-        patientList.add(patient);
 
         //WHEN
-        when(patientService.getPatientById(0)).thenReturn(java.util.Optional.ofNullable(patientList.get(0)));
+        when(patientService.getPatientById(0)).thenReturn(java.util.Optional.ofNullable(patient));
 
         //THEN
         mockMvc.perform(get("/patientInfo/search/0"))

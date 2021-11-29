@@ -8,7 +8,6 @@ import feign.FeignException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,12 +35,8 @@ public class ClientNoteController {
     }
 
     @PostMapping("/patHistory/add")
-    public String addNewNote(@ModelAttribute AppointmentBean appointmentBean, Model model, BindingResult result) {
-        if (!result.hasErrors()) {
-            clientNoteService.addNewAppointment(appointmentBean);
-            return "redirect:/searchById/" + appointmentBean.getPatId();
-        }
-        model.addAttribute(appointmentBean);
+    public String addNewNote(@ModelAttribute AppointmentBean appointmentBean, Model model) {
+        clientNoteService.addNewAppointment(appointmentBean);
         return "redirect:/searchById/" + appointmentBean.getPatId();
     }
 
@@ -59,12 +54,9 @@ public class ClientNoteController {
     }
 
     @PostMapping("/patHistory/update")
-    public String updateNote(@ModelAttribute AppointmentBean appointmentBean, Model model, BindingResult result) {
-        if (!result.hasErrors()) {
-            clientNoteService.updateNote(appointmentBean);
-            return "redirect:/searchById/" + appointmentBean.getPatId();
-        }
-        model.addAttribute(appointmentBean);
-        return "FormUpdateNote";
+    public String updateNote(@ModelAttribute AppointmentBean appointmentBean, Model model) {
+        clientNoteService.updateNote(appointmentBean);
+        return "redirect:/searchById/" + appointmentBean.getPatId();
+
     }
 }

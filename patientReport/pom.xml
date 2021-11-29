@@ -12,7 +12,7 @@
 	<artifactId>patientReport</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>patientReport</name>
-	<description>Demo project for Spring Boot</description>
+	<description>Disease risk screening application</description>
 	<properties>
 		<java.version>11</java.version>
 		<spring-cloud.version>2021.0.0-RC1</spring-cloud.version>
@@ -40,7 +40,6 @@
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-openfeign</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
@@ -77,6 +76,7 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<version>2.5.6</version>
 				<configuration>
 					<excludes>
 						<exclude>

@@ -8,8 +8,8 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 @EnableFeignClients("com.mediscreen.patientReport")
 public class PatientReportApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(PatientReportApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(PatientReportApplication.class, args);
+    }
 
 }

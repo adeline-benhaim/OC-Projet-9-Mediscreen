@@ -2,6 +2,7 @@ package com.mediscreen.clientui.controller;
 
 import com.mediscreen.clientui.beans.AppointmentBean;
 import com.mediscreen.clientui.beans.PatientBean;
+import com.mediscreen.clientui.config.PaginationUtils;
 import com.mediscreen.clientui.service.ClientInfoService;
 import com.mediscreen.clientui.service.ClientNoteService;
 import feign.FeignException;
@@ -57,12 +58,8 @@ public class ClientInfoController {
         try {
             Iterable<PatientBean> allPatientsBeanList = clientInfoService.getAllPatient();
             model.addAttribute("allPatientsBeanList", allPatientsBeanList);
-            List<PatientBean> patientBeanList = clientInfoService.getPatientList(patientBean.getFirstName(), patientBean.getLastName());
-            model.addAttribute("patientBeanList", patientBeanList);
             return "ListPatients";
         } catch (FeignException feignException$NotFound) {
-            List<PatientBean> patientBeanList = new ArrayList<>();
-            model.addAttribute("patientBeanList", patientBeanList);
             return "ListPatients";
         }
     }
@@ -98,7 +95,6 @@ public class ClientInfoController {
 
     @PostMapping("/updatePatient")
     public String updatePatient(@ModelAttribute PatientBean patientBean, Model model, BindingResult result) {
-        if (!result.hasErrors()) {
             try {
                 clientInfoService.updatePatient(patientBean);
                 return "redirect:/searchById/" + patientBean.getPatId();
@@ -109,8 +105,6 @@ public class ClientInfoController {
                 return "FormUpdatePatient";
             }
         }
-        return "redirect:/updatePatient";
-    }
 
     @GetMapping("/addPatient")
     public String addPatient(Model model) {
@@ -121,7 +115,6 @@ public class ClientInfoController {
 
     @PostMapping("/addPatient")
     public String addPatient(@ModelAttribute PatientBean patientBean, Model model, BindingResult result) {
-        if (!result.hasErrors()) {
             try {
                 PatientBean patientBean1 = clientInfoService.postPatient(patientBean.getFirstName(), patientBean.getLastName(), patientBean.getDob(), patientBean.getSex(), patientBean.getAddress(), patientBean.getPhone());
                 return "redirect:/searchById/" + patientBean1.getPatId();
@@ -131,8 +124,6 @@ public class ClientInfoController {
                 model.addAttribute("patientBean", patientBean);
                 return "FormNewPatient";
             }
-        }
-        return "redirect:/addPatient";
     }
 
 }

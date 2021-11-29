@@ -80,7 +80,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:if="${allPatientsBeanList.empty}">
+            <tr th:if="${#lists.isEmpty(allPatientsBeanList)}">
                 <td colspan="4">No result</td>
             </tr>
             <tr th:each="patient: ${allPatientsBeanList}">
