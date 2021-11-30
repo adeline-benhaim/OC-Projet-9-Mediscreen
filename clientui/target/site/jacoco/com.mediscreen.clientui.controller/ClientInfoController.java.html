@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ClientInfoController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">clientui</a> &gt; <a href="index.source.html" class="el_package">com.mediscreen.clientui.controller</a> &gt; <span class="el_source">ClientInfoController.java</span></div><h1>ClientInfoController.java</h1><pre class="source lang-java linenums">package com.mediscreen.clientui.controller;
+
+import com.mediscreen.clientui.beans.AppointmentBean;
+import com.mediscreen.clientui.beans.PatientBean;
+import com.mediscreen.clientui.config.PaginationUtils;
+import com.mediscreen.clientui.service.ClientInfoService;
+import com.mediscreen.clientui.service.ClientNoteService;
+import feign.FeignException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.util.Pair;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Controller
+<span class="fc" id="L26">public class ClientInfoController {</span>
+
+    @Autowired
+    ClientInfoService clientInfoService;
+    @Autowired
+    ClientNoteService clientNoteService;
+
+    @GetMapping(&quot;/search/{firstName}/{lastName}&quot;)
+    public String searchByFirstNameAndLastName(@ModelAttribute PatientBean patientBean, Model model) {
+        try {
+<span class="fc" id="L36">            List&lt;PatientBean&gt; patientBeanList = clientInfoService.getPatientList(patientBean.getFirstName(), patientBean.getLastName());</span>
+<span class="fc" id="L37">            model.addAttribute(&quot;patientBeanList&quot;, patientBeanList);</span>
+<span class="fc" id="L38">            return &quot;SearchPatient&quot;;</span>
+<span class="fc" id="L39">        } catch (FeignException feignException$NotFound) {</span>
+<span class="fc" id="L40">            List&lt;PatientBean&gt; patientBeanList = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L41">            model.addAttribute(&quot;patientBeanList&quot;, patientBeanList);</span>
+<span class="fc" id="L42">            return &quot;SearchPatient&quot;;</span>
+        }
+    }
+
+    @PostMapping(&quot;/search/{firstname}/{lastname}&quot;)
+    public String searchPatient(@ModelAttribute PatientBean patientBean) {
+<span class="fc" id="L48">        return &quot;redirect:/search/&quot; + patientBean.getFirstName() + &quot;/&quot; + patientBean.getLastName();</span>
+    }
+
+    @GetMapping(&quot;/&quot;)
+    public String home() {
+<span class="fc" id="L53">        return &quot;redirect:/patients&quot;;</span>
+    }
+
+    @GetMapping(&quot;/patients&quot;)
+    public String getAllPatients(@ModelAttribute PatientBean patientBean, Model model) {
+        try {
+<span class="fc" id="L59">            Iterable&lt;PatientBean&gt; allPatientsBeanList = clientInfoService.getAllPatient();</span>
+<span class="fc" id="L60">            model.addAttribute(&quot;allPatientsBeanList&quot;, allPatientsBeanList);</span>
+<span class="fc" id="L61">            return &quot;ListPatients&quot;;</span>
+<span class="fc" id="L62">        } catch (FeignException feignException$NotFound) {</span>
+<span class="fc" id="L63">            return &quot;ListPatients&quot;;</span>
+        }
+    }
+
+    @GetMapping(&quot;/searchById/{id}&quot;)
+    public String searchById(@PathVariable(&quot;id&quot;) int patId, Model model, @PageableDefault(size = 3) Pageable pageable) {
+<span class="fc" id="L69">        String baseUri = &quot;/searchById/&quot; + patId + &quot;?page=&quot;;</span>
+        try {
+<span class="nc" id="L71">            PatientBean patientBean = clientInfoService.getPatientById(patId);</span>
+<span class="nc" id="L72">            model.addAttribute(&quot;patientBean&quot;, patientBean);</span>
+<span class="nc" id="L73">            Pair&lt;List&lt;AppointmentBean&gt;, Long&gt; appointmentBeanList = clientNoteService.getNotesBean(patientBean.getPatId(), pageable);</span>
+<span class="nc" id="L74">            model.addAttribute(&quot;appointmentBeanList&quot;, appointmentBeanList.getFirst());</span>
+<span class="nc" id="L75">            PaginationUtils.paginationBuilder(model, pageable, appointmentBeanList.getSecond(), baseUri);</span>
+<span class="nc" id="L76">            AppointmentBean appointmentBean = new AppointmentBean();</span>
+<span class="nc" id="L77">            appointmentBean.setPatId(patId);</span>
+<span class="nc" id="L78">            model.addAttribute(&quot;appointmentBean&quot;, appointmentBean);</span>
+<span class="nc" id="L79">            return &quot;PatientInfo&quot;;</span>
+<span class="fc" id="L80">        } catch (FeignException feignException$NotFound) {</span>
+<span class="fc" id="L81">            return &quot;redirect:/patients&quot;;</span>
+        }
+    }
+
+    @GetMapping(&quot;/updatePatient/{id}&quot;)
+    public String getFormToUpdatePatient(@PathVariable(&quot;id&quot;) int patId, Model model) {
+        try {
+<span class="fc" id="L88">            PatientBean patientBeanToUpdate = clientInfoService.getPatientById(patId);</span>
+<span class="fc" id="L89">            model.addAttribute(&quot;patientBean&quot;, patientBeanToUpdate);</span>
+<span class="fc" id="L90">            return &quot;FormUpdatePatient&quot;;</span>
+<span class="fc" id="L91">        } catch (FeignException feignException$NotFound) {</span>
+<span class="fc" id="L92">            return &quot;redirect:/patients&quot;;</span>
+        }
+    }
+
+    @PostMapping(&quot;/updatePatient&quot;)
+    public String updatePatient(@ModelAttribute PatientBean patientBean, Model model, BindingResult result) {
+            try {
+<span class="fc" id="L99">                clientInfoService.updatePatient(patientBean);</span>
+<span class="fc" id="L100">                return &quot;redirect:/searchById/&quot; + patientBean.getPatId();</span>
+<span class="nc" id="L101">            } catch (FeignException e) {</span>
+<span class="nc" id="L102">                ObjectError objectError = new ObjectError(&quot;error&quot;, e.contentUTF8());</span>
+<span class="nc" id="L103">                result.addError(objectError);</span>
+<span class="nc" id="L104">                model.addAttribute(&quot;patientBean&quot;, patientBean);</span>
+<span class="nc" id="L105">                return &quot;FormUpdatePatient&quot;;</span>
+            }
+        }
+
+    @GetMapping(&quot;/addPatient&quot;)
+    public String addPatient(Model model) {
+<span class="fc" id="L111">        PatientBean patientBean = new PatientBean();</span>
+<span class="fc" id="L112">        model.addAttribute(&quot;patientBean&quot;, patientBean);</span>
+<span class="fc" id="L113">        return &quot;FormNewPatient&quot;;</span>
+    }
+
+    @PostMapping(&quot;/addPatient&quot;)
+    public String addPatient(@ModelAttribute PatientBean patientBean, Model model, BindingResult result) {
+            try {
+<span class="fc" id="L119">                PatientBean patientBean1 = clientInfoService.postPatient(patientBean.getFirstName(), patientBean.getLastName(), patientBean.getDob(), patientBean.getSex(), patientBean.getAddress(), patientBean.getPhone());</span>
+<span class="fc" id="L120">                return &quot;redirect:/searchById/&quot; + patientBean1.getPatId();</span>
+<span class="fc" id="L121">            } catch (FeignException e) {</span>
+<span class="fc" id="L122">                ObjectError objectError = new ObjectError(&quot;error&quot;, e.contentUTF8());</span>
+<span class="fc" id="L123">                result.addError(objectError);</span>
+<span class="fc" id="L124">                model.addAttribute(&quot;patientBean&quot;, patientBean);</span>
+<span class="fc" id="L125">                return &quot;FormNewPatient&quot;;</span>
+            }
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

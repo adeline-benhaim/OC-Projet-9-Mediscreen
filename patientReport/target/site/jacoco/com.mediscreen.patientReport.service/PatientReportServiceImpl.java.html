@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PatientReportServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">patientReport</a> &gt; <a href="index.source.html" class="el_package">com.mediscreen.patientReport.service</a> &gt; <span class="el_source">PatientReportServiceImpl.java</span></div><h1>PatientReportServiceImpl.java</h1><pre class="source lang-java linenums">package com.mediscreen.patientReport.service;
+
+import com.mediscreen.patientReport.beans.AppointmentBean;
+import com.mediscreen.patientReport.beans.PatientBean;
+import com.mediscreen.patientReport.model.DiabetesTriggers;
+import com.mediscreen.patientReport.proxies.PatientInfoProxy;
+import com.mediscreen.patientReport.proxies.PatientNoteProxy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.util.Pair;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+
+import static com.mediscreen.patientReport.beans.PatientBean.Sex.F;
+import static com.mediscreen.patientReport.beans.PatientBean.Sex.M;
+import static com.mediscreen.patientReport.constants.RiskLevel.*;
+
+@Service
+<span class="fc" id="L25">public class PatientReportServiceImpl implements PatientReportService {</span>
+<span class="fc" id="L26">    private static final Logger logger = LoggerFactory.getLogger(PatientReportService.class);</span>
+
+    @Autowired
+    PatientInfoProxy patientInfoProxy;
+    @Autowired
+    PatientNoteProxy patientNoteProxy;
+
+    /**
+     * Calculate age of patient
+     *
+     * @param patId id of the patient whose age is sought
+     * @return age of patient found by id
+     */
+    public int calculateAge(int patId) {
+<span class="fc" id="L40">        logger.info(&quot;Try to calculate age for patient id : {} &quot;, patId);</span>
+<span class="fc" id="L41">        String birthdate = patientInfoProxy.getPatientById(patId).getDob();</span>
+<span class="fc" id="L42">        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(&quot;yyyy-MM-dd&quot;);</span>
+<span class="fc" id="L43">        LocalDate bod = LocalDate.parse(birthdate, formatter);</span>
+<span class="fc" id="L44">        logger.info(&quot;Calculate age for patient id : {} &quot;, patId);</span>
+<span class="fc" id="L45">        return Period.between(bod, LocalDate.now()).getYears();</span>
+    }
+
+    /**
+     * Counts the number of occurrences without duplicate of trigger terms found in a list of notes
+     *
+     * @param patientNoteProxies list of appointments which contain the list of notes
+     * @return the number of occurrences without duplicate found
+     */
+    public int diabetesTriggersCount(Pair&lt;List&lt;AppointmentBean&gt;, Long&gt; patientNoteProxies) {
+<span class="fc" id="L55">        logger.info(&quot;Count diabetes triggers&quot;);</span>
+<span class="fc" id="L56">        List&lt;String&gt; countWithDuplicate = new ArrayList();</span>
+<span class="fc bfc" id="L57" title="All 2 branches covered.">        for (AppointmentBean note : patientNoteProxies.getFirst()) {</span>
+<span class="fc bfc" id="L58" title="All 2 branches covered.">            for (String trigger : DiabetesTriggers.TriggersList) {</span>
+<span class="fc bfc" id="L59" title="All 2 branches covered.">                if (note.getNote().toLowerCase(Locale.ROOT).contains(trigger.toLowerCase(Locale.ROOT))) {</span>
+<span class="fc" id="L60">                    countWithDuplicate.add(trigger);</span>
+                }
+<span class="fc" id="L62">            }</span>
+<span class="fc" id="L63">        }</span>
+<span class="fc" id="L64">        Set&lt;String&gt; mySet = new HashSet&lt;String&gt;(countWithDuplicate);</span>
+<span class="fc" id="L65">        List&lt;String&gt; countWithoutDuplicate = new ArrayList&lt;String&gt;(mySet);</span>
+<span class="fc" id="L66">        return countWithoutDuplicate.size();</span>
+    }
+
+    /**
+     * Create a report that includes patient demographics, as well as their diabetes risk level
+     *
+     * @param patId id of the patient whose report is sought
+     * @return a string with report by patient id
+     */
+    @Override
+    public String calculateRiskLevel(int patId) {
+<span class="fc" id="L77">        logger.info(&quot;Calculate risk level for patient id : {} &quot;, patId);</span>
+<span class="fc" id="L78">        PatientBean patientBean = patientInfoProxy.getPatientById(patId);</span>
+<span class="fc" id="L79">        Pair&lt;List&lt;AppointmentBean&gt;, Long&gt; appointmentBeanList = patientNoteProxy.findByPatId(patId, Pageable.unpaged());</span>
+<span class="fc" id="L80">        int nbDiabetesTriggers = diabetesTriggersCount(appointmentBeanList);</span>
+<span class="fc" id="L81">        PatientBean.Sex sex = patientBean.getSex();</span>
+<span class="fc" id="L82">        int age = calculateAge(patId);</span>
+<span class="fc" id="L83">        String diabetesAssessment = null;</span>
+<span class="fc bfc" id="L84" title="All 2 branches covered.">        if (age &lt; 30) {</span>
+<span class="fc" id="L85">            logger.info(&quot;Calculate risk level for patient &lt; 30 &quot;);</span>
+<span class="fc bfc" id="L86" title="All 2 branches covered.">            if (sex == M) {</span>
+<span class="fc" id="L87">                logger.info(&quot;Calculate risk level for man&quot;);</span>
+<span class="fc bfc" id="L88" title="All 6 branches covered.">                if (nbDiabetesTriggers &gt;= 3 &amp; nbDiabetesTriggers &lt; 5) {</span>
+<span class="fc" id="L89">                    diabetesAssessment = IN_DANGER;</span>
+<span class="fc bfc" id="L90" title="All 2 branches covered.">                } else if (nbDiabetesTriggers &gt;= 5) {</span>
+<span class="fc" id="L91">                    diabetesAssessment = EARLY_ONSET;</span>
+                }
+<span class="pc bpc" id="L93" title="1 of 2 branches missed.">            } else if (sex == F) {</span>
+<span class="fc" id="L94">                logger.info(&quot;Calculate risk level for woman&quot;);</span>
+<span class="fc bfc" id="L95" title="All 6 branches covered.">                if (nbDiabetesTriggers &gt;= 4 &amp; nbDiabetesTriggers &lt; 7) {</span>
+<span class="fc" id="L96">                    diabetesAssessment = IN_DANGER;</span>
+<span class="fc bfc" id="L97" title="All 2 branches covered.">                } else if (nbDiabetesTriggers &gt;= 7) {</span>
+<span class="fc" id="L98">                    diabetesAssessment = EARLY_ONSET;</span>
+                }
+            }
+        } else {
+<span class="fc" id="L102">            logger.info(&quot;Calculate risk level for patient &gt; 30 &quot;);</span>
+<span class="pc bpc" id="L103" title="1 of 6 branches missed.">            if (nbDiabetesTriggers &gt;= 2 &amp; nbDiabetesTriggers &lt; 6) {</span>
+<span class="fc" id="L104">                diabetesAssessment = BORDERLINE;</span>
+<span class="pc bpc" id="L105" title="1 of 6 branches missed.">            } else if (nbDiabetesTriggers &gt;= 6 &amp; nbDiabetesTriggers &lt; 8) {</span>
+<span class="fc" id="L106">                diabetesAssessment = IN_DANGER;</span>
+<span class="pc bpc" id="L107" title="1 of 2 branches missed.">            } else if (nbDiabetesTriggers &gt;= 8) {</span>
+<span class="fc" id="L108">                diabetesAssessment = EARLY_ONSET;</span>
+            }
+        }
+<span class="fc bfc" id="L111" title="All 2 branches covered.">        if (diabetesAssessment == null) {</span>
+<span class="fc" id="L112">            diabetesAssessment = NONE;</span>
+        }
+<span class="fc" id="L114">        return &quot;Patient: &quot; + patientBean.getFirstName() + &quot; &quot; + patientBean.getLastName() + &quot; (age &quot; + age + &quot;) diabetes assessment is: &quot; + diabetesAssessment;</span>
+    }
+
+    /**
+     * Create a list of reports with all patients with the same lastname that includes patient demographics, as well as their diabetes risk level
+     *
+     * @param lastName of the patient's list whose report is sought
+     * @return a list with with all patients found with the same lastname
+     */
+    @Override
+    public List&lt;String&gt; calculateRiskLevelFamily(String lastName) {
+<span class="fc" id="L125">        logger.info(&quot;Calculate risk level for family name : &quot; + lastName);</span>
+<span class="fc" id="L126">        Iterable&lt;PatientBean&gt; patientIt = patientInfoProxy.getAllPatient();</span>
+<span class="fc" id="L127">        List&lt;PatientBean&gt; patientList = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L128" title="All 2 branches covered.">        for (PatientBean patient : patientIt) {</span>
+<span class="pc bpc" id="L129" title="1 of 2 branches missed.">            if (patient.getLastName().equalsIgnoreCase(lastName)) {</span>
+<span class="fc" id="L130">                patientList.add(patient);</span>
+            }
+<span class="fc" id="L132">        }</span>
+<span class="fc" id="L133">        List&lt;String&gt; riskFamily = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L134" title="All 2 branches covered.">        for (PatientBean patientBean : patientList) {</span>
+<span class="fc" id="L135">            String calculateRiskLevel = calculateRiskLevel(patientBean.getPatId());</span>
+<span class="fc" id="L136">            riskFamily.add(calculateRiskLevel);</span>
+<span class="fc" id="L137">        }</span>
+<span class="fc" id="L138">        return riskFamily;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

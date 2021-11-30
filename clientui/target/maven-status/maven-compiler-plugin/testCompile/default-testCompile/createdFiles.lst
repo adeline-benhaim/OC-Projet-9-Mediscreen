@@ -1,0 +1,7 @@
+com\mediscreen\clientui\ClientuiApplicationTests.class
+com\mediscreen\clientui\controller\ClientReportControllerTest.class
+com\mediscreen\clientui\controller\ClientInfoControllerTest.class
+com\mediscreen\clientui\service\ClientNoteServiceTest.class
+com\mediscreen\clientui\controller\ClientNoteControllerTest.class
+com\mediscreen\clientui\service\ClientReportServiceTest.class
+com\mediscreen\clientui\service\ClientInfoServiceTest.class

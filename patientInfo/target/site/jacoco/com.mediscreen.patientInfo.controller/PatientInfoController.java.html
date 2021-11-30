@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PatientInfoController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">patientInfo</a> &gt; <a href="index.source.html" class="el_package">com.mediscreen.patientInfo.controller</a> &gt; <span class="el_source">PatientInfoController.java</span></div><h1>PatientInfoController.java</h1><pre class="source lang-java linenums">package com.mediscreen.patientInfo.controller;
+
+import com.mediscreen.patientInfo.exceptions.PatientAlreadyExistException;
+import com.mediscreen.patientInfo.exceptions.PatientNotFoundException;
+import com.mediscreen.patientInfo.model.Patient;
+import com.mediscreen.patientInfo.service.PatientInfoService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MissingServletRequestParameterException;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
+
+@Api(&quot;API for CRUD operations for patientInfo&quot;)
+@RestController
+<span class="fc" id="L20">public class PatientInfoController {</span>
+
+    @Autowired
+    PatientInfoService patientInfoService;
+
+    @ApiOperation(&quot;Get all patients&quot;)
+    @GetMapping(&quot;/patientInfo&quot;)
+    public ResponseEntity&lt;Iterable&lt;Patient&gt;&gt; getAllPatient() {
+<span class="fc" id="L28">        return ResponseEntity.ok(patientInfoService.getAllPatients());</span>
+    }
+
+    @ApiOperation(&quot;Get a list of patients found by firstname and lastname&quot;)
+    @GetMapping(&quot;/patientInfo/search/{firstName}/{lastName}&quot;)
+    public ResponseEntity&lt;List&lt;Patient&gt;&gt; getPatientList(@PathVariable(&quot;firstName&quot;) String firstName, @PathVariable(&quot;lastName&quot;) String lastName) {
+        try {
+<span class="fc" id="L35">            List&lt;Patient&gt; patientList = patientInfoService.getPatientListByFistNameAndLastName(firstName, lastName);</span>
+<span class="fc" id="L36">            return ResponseEntity.ok(patientList);</span>
+<span class="fc" id="L37">        } catch (PatientNotFoundException e) {</span>
+<span class="fc" id="L38">            return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);</span>
+        }
+    }
+
+    @ApiOperation(&quot;Get a patient found by id&quot;)
+    @GetMapping(&quot;/patientInfo/search/{id}&quot;)
+    public ResponseEntity&lt;Optional&lt;Patient&gt;&gt; getPatientById(@PathVariable(&quot;id&quot;) int id) {
+        try {
+<span class="fc" id="L46">            Optional&lt;Patient&gt; patient = patientInfoService.getPatientById(id);</span>
+<span class="fc" id="L47">            return ResponseEntity.ok(patient);</span>
+<span class="fc" id="L48">        } catch (PatientNotFoundException e) {</span>
+<span class="fc" id="L49">            return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);</span>
+        }
+    }
+
+    @ApiOperation(&quot;Update a patient&quot;)
+    @PutMapping(&quot;/patientInfo/update&quot;)
+    public ResponseEntity&lt;Patient&gt; updatePatient(@RequestBody Patient patient) {
+        try {
+<span class="fc" id="L57">            Patient patientToUpdate = patientInfoService.updatePatient(patient);</span>
+<span class="fc" id="L58">            return ResponseEntity.ok(patientToUpdate);</span>
+<span class="fc" id="L59">        } catch (PatientNotFoundException e) {</span>
+<span class="fc" id="L60">            return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);</span>
+<span class="fc" id="L61">        } catch (PatientAlreadyExistException e) {</span>
+<span class="fc" id="L62">            return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);</span>
+        }
+    }
+
+    @ApiOperation(&quot;Add a new patient&quot;)
+    @PostMapping(&quot;/patient/add&quot;)
+    public ResponseEntity&lt;Patient&gt; postPatient(@RequestParam(&quot;firstName&quot;) String firstName,
+                                               @RequestParam(&quot;lastName&quot;) String lastName,
+                                               @RequestParam(&quot;dob&quot;) String birthdate,
+                                               @RequestParam(&quot;sex&quot;) Patient.Sex sex,
+                                               @RequestParam(value = &quot;address&quot;, required = false) String address,
+                                               @RequestParam(value = &quot;phone&quot;, required = false) String phone) {
+        try {
+<span class="fc" id="L75">            Patient patient = Patient.builder()</span>
+<span class="fc" id="L76">                    .firstName(firstName)</span>
+<span class="fc" id="L77">                    .lastName(lastName)</span>
+<span class="fc" id="L78">                    .dob(birthdate)</span>
+<span class="fc" id="L79">                    .sex(sex)</span>
+<span class="fc" id="L80">                    .address(address)</span>
+<span class="fc" id="L81">                    .phone(phone)</span>
+<span class="fc" id="L82">                    .build();</span>
+<span class="fc" id="L83">            Patient patientToCreate = patientInfoService.createPatient(patient);</span>
+<span class="fc" id="L84">            return ResponseEntity.ok(patientToCreate);</span>
+<span class="fc" id="L85">        } catch (PatientAlreadyExistException e) {</span>
+<span class="fc" id="L86">            return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);</span>
+        }
+    }
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public String handleMissingParams(MissingServletRequestParameterException ex) {
+<span class="nc" id="L92">        String name = ex.getParameterName();</span>
+<span class="nc" id="L93">        return name + &quot; parameter is missing&quot;;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

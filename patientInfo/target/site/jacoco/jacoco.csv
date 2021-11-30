@@ -1,0 +1,10 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+patientInfo,com.mediscreen.patientInfo.service,PatientInfoServiceImpl,0,236,0,10,0,41,0,12,0,7
+patientInfo,com.mediscreen.patientInfo.model,Patient.PatientBuilder,16,56,0,0,0,1,1,9,1,9
+patientInfo,com.mediscreen.patientInfo.model,Patient.Sex,0,24,0,0,0,3,0,1,0,1
+patientInfo,com.mediscreen.patientInfo.model,Patient,0,80,0,0,0,11,0,17,0,17
+patientInfo,com.mediscreen.patientInfo.exceptions,PatientAlreadyExistException,0,4,0,0,0,2,0,1,0,1
+patientInfo,com.mediscreen.patientInfo.exceptions,PatientNotFoundException,0,4,0,0,0,2,0,1,0,1
+patientInfo,com.mediscreen.patientInfo,PatientInfoApplication,5,3,0,0,2,1,1,1,1,1
+patientInfo,com.mediscreen.patientInfo.config,SwaggerConfig,0,15,0,0,0,6,0,2,0,2
+patientInfo,com.mediscreen.patientInfo.controller,PatientInfoController,6,96,0,0,2,28,1,6,1,6

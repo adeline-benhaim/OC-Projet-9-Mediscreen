@@ -1,0 +1,5 @@
+com\mediscreen\patientReport\integration\PatientReportIntegrationTest.class
+com\mediscreen\patientReport\controller\PatientReportControllerTest.class
+com\mediscreen\patientReport\PatientReportApplicationTests.class
+com\mediscreen\patientReport\constant\RiskLevelTest.class
+com\mediscreen\patientReport\service\PatientReportServiceImplTest.class

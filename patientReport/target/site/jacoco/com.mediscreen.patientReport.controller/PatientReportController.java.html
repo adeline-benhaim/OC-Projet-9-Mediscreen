@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PatientReportController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">patientReport</a> &gt; <a href="index.source.html" class="el_package">com.mediscreen.patientReport.controller</a> &gt; <span class="el_source">PatientReportController.java</span></div><h1>PatientReportController.java</h1><pre class="source lang-java linenums">package com.mediscreen.patientReport.controller;
+
+import com.mediscreen.patientReport.service.PatientReportService;
+import feign.FeignException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+
+@RestController
+<span class="fc" id="L15">public class PatientReportController {</span>
+
+    @Autowired
+    PatientReportService patientReportService;
+
+    /**
+     * Post a report that includes patient demographics, as well as their diabetes risk level
+     *
+     * @param patId id of the patient whose report is sought
+     * @return a string with report by patient id
+     */
+    @PostMapping(&quot;/assess/id&quot;)
+    public ResponseEntity&lt;String&gt; postAssessById(@RequestParam(value = &quot;patId&quot;) int patId) {
+        try {
+<span class="fc" id="L29">            String report = patientReportService.calculateRiskLevel(patId);</span>
+<span class="fc" id="L30">            return ResponseEntity.ok(report);</span>
+<span class="fc" id="L31">        } catch (FeignException e) {</span>
+<span class="fc" id="L32">            return new ResponseEntity(e.contentUTF8(), HttpStatus.NOT_FOUND);</span>
+        }
+    }
+
+        /**
+         * Post a list of reports with all patients with the same lastname that includes patient demographics, as well as their diabetes risk level
+         *
+         * @param lastName of the patient's list whose report is sought
+         * @return a list with with all patients found with the same lastname
+         */
+        @PostMapping(&quot;/assess/familyName&quot;)
+        public ResponseEntity&lt;List&lt;String&gt;&gt; postAssessByName (@RequestParam(value = &quot;familyName&quot;) String lastName){
+            try {
+<span class="fc" id="L45">                List&lt;String&gt; reportList = patientReportService.calculateRiskLevelFamily(lastName);</span>
+<span class="fc" id="L46">                return ResponseEntity.ok(reportList);</span>
+<span class="fc" id="L47">            } catch (FeignException e) {</span>
+<span class="fc" id="L48">                return new ResponseEntity(e.contentUTF8(), HttpStatus.NOT_FOUND);</span>
+            }
+
+        }
+
+    }
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

@@ -1,6 +1,5 @@
 package com.mediscreen.clientui.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mediscreen.clientui.beans.PatientBean;
 import com.mediscreen.clientui.service.ClientInfoService;
 import feign.FeignException;
@@ -12,7 +11,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;

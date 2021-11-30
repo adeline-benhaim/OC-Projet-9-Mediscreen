@@ -1,0 +1,5 @@
+com\mediscreen\patientInfo\PatientInfoApplicationTests.class
+com\mediscreen\patientInfo\integration\PatientInfoIntegrationTest.class
+com\mediscreen\patientInfo\config\DataSourceTest.class
+com\mediscreen\patientInfo\controller\PatientInfoControllerTest.class
+com\mediscreen\patientInfo\service\PatientInfoServiceImplTest.class

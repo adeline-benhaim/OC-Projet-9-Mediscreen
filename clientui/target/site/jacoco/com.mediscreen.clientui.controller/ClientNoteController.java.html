@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ClientNoteController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">clientui</a> &gt; <a href="index.source.html" class="el_package">com.mediscreen.clientui.controller</a> &gt; <span class="el_source">ClientNoteController.java</span></div><h1>ClientNoteController.java</h1><pre class="source lang-java linenums">package com.mediscreen.clientui.controller;
+
+import com.mediscreen.clientui.beans.AppointmentBean;
+import com.mediscreen.clientui.beans.PatientBean;
+import com.mediscreen.clientui.service.ClientInfoService;
+import com.mediscreen.clientui.service.ClientNoteService;
+import feign.FeignException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+
+@Controller
+<span class="fc" id="L17">public class ClientNoteController {</span>
+
+    @Autowired
+    ClientNoteService clientNoteService;
+    @Autowired
+    ClientInfoService clientInfoService;
+
+    @GetMapping(&quot;/note/{id}&quot;)
+    public String getNoteViewById(@PathVariable(&quot;id&quot;) String appointmentId, Model model) {
+        try {
+<span class="fc" id="L27">            AppointmentBean appointmentBean = clientNoteService.getAppointmentById(appointmentId);</span>
+<span class="fc" id="L28">            model.addAttribute(&quot;appointmentBean&quot;, appointmentBean);</span>
+<span class="fc" id="L29">            PatientBean patientBean = clientInfoService.getPatientById(appointmentBean.getPatId());</span>
+<span class="fc" id="L30">            model.addAttribute(&quot;patientBean&quot;, patientBean);</span>
+<span class="fc" id="L31">            return &quot;NoteView&quot;;</span>
+<span class="fc" id="L32">        } catch (FeignException feignException$NotFound) {</span>
+<span class="fc" id="L33">            return &quot;redirect:/patients&quot;;</span>
+        }
+    }
+
+    @PostMapping(&quot;/patHistory/add&quot;)
+    public String addNewNote(@ModelAttribute AppointmentBean appointmentBean, Model model) {
+<span class="fc" id="L39">        clientNoteService.addNewAppointment(appointmentBean);</span>
+<span class="fc" id="L40">        return &quot;redirect:/searchById/&quot; + appointmentBean.getPatId();</span>
+    }
+
+    @GetMapping(&quot;/updateNote/{id}&quot;)
+    public String getFormToUpdateNote(@PathVariable(&quot;id&quot;) String appointmentId, Model model) {
+        try {
+<span class="fc" id="L46">            AppointmentBean appointmentBean = clientNoteService.getAppointmentById(appointmentId);</span>
+<span class="fc" id="L47">            model.addAttribute(&quot;appointmentBean&quot;, appointmentBean);</span>
+<span class="fc" id="L48">            PatientBean patientBean = clientInfoService.getPatientById(appointmentBean.getPatId());</span>
+<span class="fc" id="L49">            model.addAttribute(&quot;patientBean&quot;, patientBean);</span>
+<span class="fc" id="L50">            return &quot;FormUpdateNote&quot;;</span>
+<span class="fc" id="L51">        } catch (FeignException feignException$NotFound) {</span>
+<span class="fc" id="L52">            return &quot;redirect:/&quot;;</span>
+        }
+    }
+
+    @PostMapping(&quot;/patHistory/update&quot;)
+    public String updateNote(@ModelAttribute AppointmentBean appointmentBean, Model model) {
+<span class="fc" id="L58">        clientNoteService.updateNote(appointmentBean);</span>
+<span class="fc" id="L59">        return &quot;redirect:/searchById/&quot; + appointmentBean.getPatId();</span>
+
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

@@ -1,0 +1,11 @@
+com\mediscreen\patientInfo\exceptions\PatientAlreadyExistException.class
+com\mediscreen\patientInfo\PatientInfoApplication.class
+com\mediscreen\patientInfo\service\PatientInfoService.class
+com\mediscreen\patientInfo\config\SwaggerConfig.class
+com\mediscreen\patientInfo\model\Patient.class
+com\mediscreen\patientInfo\service\PatientInfoServiceImpl.class
+com\mediscreen\patientInfo\repository\PatientInfoRepository.class
+com\mediscreen\patientInfo\exceptions\PatientNotFoundException.class
+com\mediscreen\patientInfo\model\Patient$PatientBuilder.class
+com\mediscreen\patientInfo\controller\PatientInfoController.class
+com\mediscreen\patientInfo\model\Patient$Sex.class

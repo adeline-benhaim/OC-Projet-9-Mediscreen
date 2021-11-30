@@ -1,0 +1,4 @@
+com\mediscreen\patientNote\config\DataSourceTest.class
+com\mediscreen\patientNote\integration\PatientNoteIntegrationTest.class
+com\mediscreen\patientNote\controller\NoteControllerTest.class
+com\mediscreen\patientNote\service\NoteServiceImplTest.class

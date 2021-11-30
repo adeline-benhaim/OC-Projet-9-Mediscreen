@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>NoteController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">patientNote</a> &gt; <a href="index.source.html" class="el_package">com.mediscreen.patientNote.controller</a> &gt; <span class="el_source">NoteController.java</span></div><h1>NoteController.java</h1><pre class="source lang-java linenums">package com.mediscreen.patientNote.controller;
+
+import com.mediscreen.patientNote.exceptions.AppointmentNotFoundException;
+import com.mediscreen.patientNote.model.Appointment;
+import com.mediscreen.patientNote.service.NoteService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.util.Pair;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
+
+@Api(&quot;API for CRUD operations for patientNote&quot;)
+@RestController
+<span class="fc" id="L20">public class NoteController {</span>
+
+    @Autowired
+    NoteService noteService;
+
+    /**
+     * Get a list of appointment by patient id
+     *
+     * @param patId id of wanted patient
+     * @return a list of appointment found by patient id
+     */
+    @ApiOperation(&quot;Get a list of appointment by patient id&quot;)
+    @GetMapping(&quot;/patientNote/{patId}&quot;)
+    public ResponseEntity&lt;Pair&lt;List&lt;Appointment&gt;, Long&gt;&gt; findByPatId(@PathVariable(&quot;patId&quot;) int patId, Pageable pageable) {
+<span class="fc" id="L34">        Pair&lt;List&lt;Appointment&gt;, Long&gt; appointmentList = noteService.findByPatId(patId, pageable);</span>
+<span class="fc" id="L35">        return ResponseEntity.ok(appointmentList);</span>
+    }
+
+    /**
+     * Get an appointment by id
+     *
+     * @param appointmentId id of wanted appointment
+     * @return appointment if exist
+     */
+    @ApiOperation(&quot;Get an appointment by id&quot;)
+    @GetMapping(&quot;/appointment/{id}&quot;)
+    public ResponseEntity&lt;Optional&lt;Appointment&gt;&gt; findAppointmentById(@PathVariable(&quot;id&quot;) String appointmentId) {
+        try {
+<span class="fc" id="L48">            Optional&lt;Appointment&gt; appointment = noteService.findByAppointmentId(appointmentId);</span>
+<span class="fc" id="L49">            return ResponseEntity.ok(appointment);</span>
+<span class="fc" id="L50">        } catch (AppointmentNotFoundException e) {</span>
+<span class="fc" id="L51">            return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);</span>
+        }
+    }
+
+    /**
+     * Post a new appointment
+     *
+     * @param appointment to create
+     * @return appointment created
+     */
+    @ApiOperation(&quot;Post a new appointment&quot;)
+    @PostMapping(&quot;/appointment/add&quot;)
+    public ResponseEntity&lt;Appointment&gt; postAppointment(@RequestBody Appointment appointment) {
+        try {
+<span class="fc" id="L65">            Appointment appointmentToCreate = noteService.createAppointment(appointment);</span>
+<span class="fc" id="L66">            return ResponseEntity.ok(appointmentToCreate);</span>
+<span class="nc" id="L67">        } catch (AppointmentNotFoundException e) {</span>
+<span class="nc" id="L68">            return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);</span>
+        }
+    }
+
+    /**
+     * Put the history of a patient's note
+     *
+     * @param appointment's note to update
+     * @return appointment with patient's note updated
+     */
+    @ApiOperation(&quot;Put the history of a patient's note&quot;)
+    @PutMapping(&quot;/note/update&quot;)
+    public ResponseEntity&lt;Appointment&gt; updateNote(@RequestBody Appointment appointment) {
+        try {
+<span class="fc" id="L82">            Appointment appointmentToUpdate = noteService.updateNote(appointment);</span>
+<span class="fc" id="L83">            return ResponseEntity.ok(appointmentToUpdate);</span>
+<span class="nc" id="L84">        } catch (AppointmentNotFoundException e) {</span>
+<span class="nc" id="L85">            return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);</span>
+        }
+    }
+
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

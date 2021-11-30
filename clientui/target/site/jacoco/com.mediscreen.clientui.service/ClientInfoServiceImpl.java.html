@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ClientInfoServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">clientui</a> &gt; <a href="index.source.html" class="el_package">com.mediscreen.clientui.service</a> &gt; <span class="el_source">ClientInfoServiceImpl.java</span></div><h1>ClientInfoServiceImpl.java</h1><pre class="source lang-java linenums">package com.mediscreen.clientui.service;
+
+import com.mediscreen.clientui.beans.PatientBean;
+import com.mediscreen.clientui.proxies.PatientInfoProxy;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+<span class="fc" id="L11">public class ClientInfoServiceImpl implements ClientInfoService {</span>
+
+    @Autowired
+    PatientInfoProxy patientInfoProxy;
+
+    /**
+     * Find all patients with info
+     *
+     * @return a list with all patients with info
+     */
+    @Override
+    public Iterable&lt;PatientBean&gt; getAllPatient() {
+<span class="fc" id="L23">        return patientInfoProxy.getAllPatient();</span>
+    }
+
+    /**
+     * Find patients by first and last name
+     *
+     * @param firstName of wanted patient
+     * @param lastName  of wanted patient
+     * @return a list of patients whose first and last name are identical to those sought
+     */
+    @Override
+    public List&lt;PatientBean&gt; getPatientList(String firstName, String lastName) {
+<span class="fc" id="L35">        return patientInfoProxy.getPatientList(firstName,lastName);</span>
+    }
+
+    /**
+     * Find a patient by id
+     *
+     * @param id of wanted patient
+     * @return patient found
+     */
+    @Override
+    public PatientBean getPatientById(int id) {
+<span class="fc" id="L46">        return patientInfoProxy.getPatientById(id);</span>
+    }
+
+    /**
+     * Update a patient
+     *
+     * @param patientBean information of patient to update
+     * @return patient updated
+     */
+    @Override
+    public PatientBean updatePatient(PatientBean patientBean) {
+<span class="fc" id="L57">        return patientInfoProxy.updatePatient(patientBean);</span>
+    }
+
+    /**
+     * Create a new patient
+     *
+     * @param firstName of patient to create
+     * @param lastName  of patient to create
+     * @param birthdate of patient to create
+     * @param sex       of patient to create
+     * @param address   of patient to create not required
+     * @param phone     of patient to create not required
+     * @return new patient created
+     */
+    @Override
+    public PatientBean postPatient(String firstName, String lastName, String birthdate, PatientBean.Sex sex, String address, String phone) {
+<span class="fc" id="L73">        return patientInfoProxy.postPatient(firstName,lastName,birthdate,sex,address,phone);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

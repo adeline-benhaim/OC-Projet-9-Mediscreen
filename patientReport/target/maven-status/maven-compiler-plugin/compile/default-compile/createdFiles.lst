@@ -1,0 +1,13 @@
+com\mediscreen\patientReport\proxies\PatientInfoProxy.class
+com\mediscreen\patientReport\constants\RiskLevel.class
+com\mediscreen\patientReport\beans\AppointmentBean$AppointmentBeanBuilder.class
+com\mediscreen\patientReport\beans\AppointmentBean.class
+com\mediscreen\patientReport\beans\PatientBean$Sex.class
+com\mediscreen\patientReport\service\PatientReportServiceImpl.class
+com\mediscreen\patientReport\PatientReportApplication.class
+com\mediscreen\patientReport\beans\PatientBean$PatientBeanBuilder.class
+com\mediscreen\patientReport\controller\PatientReportController.class
+com\mediscreen\patientReport\service\PatientReportService.class
+com\mediscreen\patientReport\beans\PatientBean.class
+com\mediscreen\patientReport\model\DiabetesTriggers.class
+com\mediscreen\patientReport\proxies\PatientNoteProxy.class

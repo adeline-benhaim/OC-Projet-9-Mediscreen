@@ -49,14 +49,6 @@ public class PatientNoteIntegrationTest {
                 .andExpect(status().isOk());
     }
 
-    //    @Test
-//    @DisplayName("GET request (/appointment/{id}}) with unknown appointment id must return an HTTP 404 response")
-//    public void getAppointmentByUnknownIdTest() throws Exception {
-//
-//        mockMvc.perform(get("/appointment/600"))
-//                .andExpect(status().isNotFound());
-//    }
-
     @Test
     @DisplayName("POST request (/appointment/add) return an HTTP 200 response")
     public void postNewAppointmentTest() throws Exception {
@@ -70,38 +62,6 @@ public class PatientNoteIntegrationTest {
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
-
-//    @Test
-//    @DisplayName("POST request (/appointment/add) with missing mandatory parameter return an HTTP 404 response")
-//    public void postNewAppointmentWithMissingMandatoryParameterTest() throws Exception {
-//
-//        Appointment appointment = Appointment.builder().patId(1).note("nouvelle note").build();
-//        when(noteService.createAppointment(appointment)).thenThrow(AppointmentNotFoundException.class);
-//
-//        mockMvc.perform(MockMvcRequestBuilders
-//                .post("/appointment/add")
-//                .content(asJsonString(appointment))
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .accept(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isBadRequest());
-//    }
-
-//    @Test
-//    @DisplayName("PUT request (/note/update) with an already existing appointment id must return an HTTP 200 response")
-//    public void putAlreadyExistingPatientInfoTest() throws Exception {
-//
-//        //GIVEN
-//        Appointment appointment = Appointment.builder().appointmentId("61a0d9fd918f0c0fe7d71235").patId(1).note("nouvelle note").doctorName("doctor 1").doctorName("doctor 1").build();
-//
-//        //THEN
-//
-//        mockMvc.perform(MockMvcRequestBuilders
-//                .put("/patientInfo/update")
-//                .content(asJsonString(appointment))
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .accept(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isOk());
-//    }
 
     @Test
     @DisplayName("PUT request (/note/update) with no existing appointment id return an HTTP 404 response")
