@@ -3,9 +3,19 @@
 Mediscreen specializes in detecting risk's factor for disease. Our screenings using predictive analysis of patient populations at an affordable cost. This app is composed of several microservices and uses
 Java to run and stores the data in Mysql and Mongo DB.
 
-## Architecture dagram
+## Environment architecture diagram
 
-![Alt text](https://i.postimg.cc/rsBXK371/Mediscreen-architecture.jpg)
+![Alt text](https://i.postimg.cc/cLyzJBYf/Architecture-diagram-Mediscreen.png)
+
+## Technical Specifications
+
+Mediscreen is composed of 3 microservices:
+
+1.<a target="_blank" href="https://drive.google.com/file/d/12e83PFt3XFRFzRn59wjLt-UTRd2iwbjj/view?usp=sharing">Documentation des spécifications API REST PatientInfo</a>
+
+2.<a target="_blank" href="https://drive.google.com/file/d/11HbdIlOqf1mJXjm7W3pnBVx_jBDlIavh/view?usp=sharing">Documentation des spécifications API REST PatientNote</a>
+
+3.<a target="_blank" href="https://drive.google.com/file/d/1mH69_GXdXkPBF3OnMfwLEQiIwVcVMMBa/view?usp=sharing">Documentation des spécifications API REST PatientReport</a>
 
 ## Get started
 
@@ -78,3 +88,16 @@ Import the code, open the console, go to the folder that contains the pom.xml fi
 5.Using the command prompt, navigate to the folder that contains the docker-compose.yml then run the following command to deploy all mediscreen microservices:
 
 `docker-compose up -d`
+
+## Add example into the database
+
+By default, the databases are empty, if you want to test the application with data you can execute this example CURL commands for patientInfo and patientNote :
+
+
+1.patientInfo :
+
+`curl -d "firstName=Lucas&lastName=Ferguson&sex=M&dob=1968-06-22&address=2 Warren Street&phone=387-866-1399" -X POST http://localhost:8081/patient/add`
+
+2.patientNote :
+
+`curl -d '{"patId":1, "note":"This is a new note","doctorName":"Doctor1"}' -X POST http://localhost:8082/appointment/add -H "Content-Type: application/json"`
